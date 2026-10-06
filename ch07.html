@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>第7回：関数定義の初歩 – プログラミング演習（2026）</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ch08.html" rel="next">
+<link href="./ch06.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d3f3448f837ff03356db176d8adb603.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch07.html">第7回：関数定義の初歩</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">プログラミング演習（2026）</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">はじめに</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第1回：変数・代入・再代入</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第2回：ベクトルと基本プロット</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第3回：for文・総和・パラメータ作図</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第4回：対数グラフで直線化・数式モード</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第5回：平面図形の変形</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第6回：条件分岐とはさみうち</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch07.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">第7回：関数定義の初歩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第8回：配列の生成・要素代入と篩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第9回：整数・剰余と互除法</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第10回：浮動小数点と数値誤差</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第11回：復習</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第12回：反復の設計と数値積分</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第13回：関数の作り込み</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第14回：行列と回転行列</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第15回：複素数とガウス平面</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">さらに学ぶために</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-assignform" id="toc-sec-assignform" class="nav-link active" data-scroll-target="#sec-assignform">代入文形式：式に名前をつける</a>
+  <ul class="collapse">
+  <li><a href="#sec-bisectfn" id="toc-sec-bisectfn" class="nav-link" data-scroll-target="#sec-bisectfn">はさみうちで使う関数</a></li>
+  </ul></li>
+  <li><a href="#sec-blockform" id="toc-sec-blockform" class="nav-link" data-scroll-target="#sec-blockform">ブロック形式：複数行の処理を関数に</a></li>
+  <li><a href="#sec-onestep" id="toc-sec-onestep" class="nav-link" data-scroll-target="#sec-onestep">1ステップ実行：区間が半分になる</a></li>
+  <li><a href="#sec-repeat" id="toc-sec-repeat" class="nav-link" data-scroll-target="#sec-repeat">繰り返し呼ぶ：ベタ書きが1行に</a></li>
+  <li><a href="#sec-scope" id="toc-sec-scope" class="nav-link" data-scroll-target="#sec-scope">局所変数とスコープ：関数の中の名前は外に漏れない</a></li>
+  <li><a href="#sec-arity" id="toc-sec-arity" class="nav-link" data-scroll-target="#sec-arity">落とし穴：引数の数が合わないとき</a></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary">今回のまとめ</a></li>
+  <li><a href="#sec-discuss" id="toc-sec-discuss" class="nav-link" data-scroll-target="#sec-discuss">みんなで考えよう</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">第7回：関数定義の初歩</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="./ch06.html">第6回</a>では，はさみうち（二分法）の <strong>1ステップ</strong> を毎回ベタ書きした． 同じ処理を何度も書くのは，書き間違いのもとであり，読みにくい． そこで今回は，その1ステップに <strong>名前をつけて関数に括り出す</strong>． キーワードは <strong>「同じ処理を繰り返すなら，名前をつけて関数にする」</strong>． あわせて，関数の三要素 <strong>引数・戻り値・局所変数</strong> と， 局所変数が関数の外に漏れない <strong>スコープ</strong> を学ぶ．</p>
+<section id="sec-assignform" class="level2" data-index="関数, 関数定義, 代入文形式">
+<h2 data-index="関数, 関数定義, 代入文形式" class="anchored" data-anchor-id="sec-assignform">代入文形式：式に名前をつける</h2>
+<p><code>g(x) = …</code> のように書くと，<strong>式に名前をつける</strong> ことができる． これが <strong>関数定義</strong> であり，ここで正式に学ぶ（<strong>代入文形式</strong> という）． 左辺の括弧の中は <strong>引数</strong>（関数に渡す値の受け口）， 右辺の計算結果が <strong>戻り値</strong>（関数が返す値）になる．</p>
+<p>まず，身近な式を関数にしてみよう．摂氏から華氏への換算である．</p>
+<p><span class="math display">\[
+F = \frac{9}{5}C + 32
+\]</span></p>
+<div id="4" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">to_fahrenheit</span>(c) <span class="op">=</span> <span class="fl">9</span><span class="op">/</span><span class="fl">5</span> <span class="op">*</span> c <span class="op">+</span> <span class="fl">32</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>to_fahrenheit (generic function with 1 method)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1→L2）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>to_fahrenheit(0)</code> と <code>to_fahrenheit(100)</code> はいくつか． 水の凝固点と沸点が，華氏では何度だったかを思い出そう．</p>
+</div>
+</div>
+<div id="6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>[<span class="fu">to_fahrenheit</span>(<span class="fl">0</span>), <span class="fu">to_fahrenheit</span>(<span class="fl">100</span>), <span class="fu">to_fahrenheit</span>(<span class="fl">37</span>)]</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>3-element Vector{Float64}:
+  32.0
+ 212.0
+  98.60000000000001</code></pre>
+</div>
+</div>
+<p><code>0°C</code> が <code>32°F</code>，<code>100°C</code> が <code>212°F</code>，体温 <code>37°C</code> が <code>98.6°F</code>． <strong>既知の値と一致した</strong>から，この関数は正しく書けていると言える（L2検証）． 引数を変えれば，同じ式をいろいろな値で使い回せる．</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：<code>9/5</code> を整数の割り算にしない
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>9/5</code> は <code>1.8</code> だが，<strong>整数どうしの商</strong>を返す <code>÷</code> を使って <code>9÷5</code> と書くと <code>1</code> になってしまう． <code>to_fahrenheit(100)</code> が <code>132</code> のような値になったら，ここを疑う （整数の割り算は<a href="./ch09.html">第9回</a>でくわしく扱う）．</p>
+</div>
+</div>
+<section id="sec-bisectfn" class="level3" data-index="関数定義>はさみうち">
+<h3 data-index="関数定義>はさみうち" class="anchored" data-anchor-id="sec-bisectfn">はさみうちで使う関数</h3>
+<p>次に，<a href="./ch06.html">第6回</a>のはさみうちで根を求めたい関数 <span class="math inline">\(f(x) = x^2 - 2\)</span> を定義する． この <span class="math inline">\(f\)</span> は <span class="math inline">\(x = \sqrt{2}\)</span> で <span class="math inline">\(0\)</span> になる（<span class="math inline">\(\sqrt{2} \approx 1.41\)</span>）．</p>
+<div id="8" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>f (generic function with 1 method)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>実行する前に予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>f(1.5)</code> はいくつになるか，<strong>実行する前に</strong>予想してみよう． （<span class="math inline">\(1.5^2 = 2.25\)</span> なので…）</p>
+</div>
+</div>
+<div id="10" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">1.5</span>)        <span class="co"># sign? magnitude?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.25</code></pre>
+</div>
+</div>
+<div id="12" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">2.0</span>)        <span class="co"># 2.0^2 - 2 = 2.0</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2.0</code></pre>
+</div>
+</div>
+<div id="14" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">0.0</span>)        <span class="co"># 0.0^2 - 2 = -2.0</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>-2.0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-blockform" class="level2" data-index="関数定義>ブロック形式, function">
+<h2 data-index="関数定義>ブロック形式, function" class="anchored" data-anchor-id="sec-blockform">ブロック形式：複数行の処理を関数に</h2>
+<p>1行の式ではなく，<strong>複数行の処理</strong> に名前をつけたいときは， <code>function … end</code> の <strong>ブロック形式</strong> を使う．</p>
+<p><a href="./ch06.html">第6回</a>でベタ書きした「はさみうちの1ステップ」を，関数 <code>bisect</code> に括り出そう． 区間 <span class="math inline">\([a, b]\)</span> の <strong>中点</strong> <span class="math inline">\(c = (a+b)/2\)</span> を計算し，<span class="math inline">\(f(c)\)</span> の符号を見て， 根を含む <strong>新しい半分の区間</strong> を選んで返す．</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>設計：新しい区間を「2要素ベクトル」で返す
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>新区間は両端 <span class="math inline">\([c, b]\)</span> または <span class="math inline">\([a, c]\)</span> の <strong>二つの数</strong> で表せる． これを <strong>2要素ベクトル</strong>（<a href="./ch02.html">第2回</a>既習）<code>[c, b]</code> として返すことにする．</p>
+<p>（<a href="./ch13.html">第13回</a>では，二つの値を一度に返す別の書き方も学ぶ．）</p>
+</div>
+</div>
+<div id="16" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">bisect</span>(f, a, b)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> (a <span class="op">+</span> b) <span class="op">/</span> <span class="fl">2</span>          <span class="co"># c is a local variable (does not leak outside)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="fu">f</span>(a) <span class="op">*</span> <span class="fu">f</span>(c) <span class="op">&lt;</span> <span class="fl">0</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [a, c]        <span class="co"># signs differ on [a, c] -&gt; root in left half [a, c]</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [c, b]        <span class="co"># otherwise root in right half [c, b]</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>bisect (generic function with 1 method)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span><code>return</code> と戻り値
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>return</code> は「ここで関数を終え，この値を返す」という命令である． <code>f(a) * f(c) &lt; 0</code> が成り立てば <code>[a, c]</code> を返してそこで終了し， そうでなければ <code>else</code> 側の <code>[c, b]</code> を返す． <strong><code>return</code> した値が戻り値</strong> になる．</p>
+</div>
+</div>
+<p>ここで <code>bisect</code> は，根を求めたい関数 <code>f</code> を <strong>引数として受け取る</strong> （さきほど定義した <code>f(x) = x^2 - 2</code> を渡す）． 受け取った <code>f</code> を使って，内部で <code>f(a)</code> と <code>f(c)</code> を計算している．</p>
+<p>この関数の構造を図にすると <a href="#fig-pad-bisect-fn" class="quarto-xref">図&nbsp;1</a> のようになる．</p>
+<div id="fig-pad-bisect-fn" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pad-bisect-fn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/pad/pad-bisection-step.drawio.svg" class="img-fluid figure-img" style="width:55.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pad-bisect-fn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;1: 関数 <code>bisect(f, a, b)</code> の構造（PAD）．中点 <span class="math inline">\(c\)</span> を求め，<span class="math inline">\(f(a)\cdot f(c)\)</span> の符号で新区間を選び，<strong>2要素ベクトル</strong> <code>[a, c]</code>／<code>[c, b]</code> を分岐の中で <code>return</code> する．
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-onestep" class="level2" data-index="引数, 戻り値">
+<h2 data-index="引数, 戻り値" class="anchored" data-anchor-id="sec-onestep">1ステップ実行：区間が半分になる</h2>
+<p>区間 <span class="math inline">\([1.0, 2.0]\)</span> から始める．この区間には <span class="math inline">\(\sqrt{2} \approx 1.41\)</span> が含まれている （<span class="math inline">\(f(1.0) = -1.0 &lt; 0\)</span>，<span class="math inline">\(f(2.0) = 2.0 &gt; 0\)</span> なので，途中で <span class="math inline">\(0\)</span> をまたぐ）．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>bisect(f, 1.0, 2.0)</code> は何を返すか？ 中点は <span class="math inline">\(c = 1.5\)</span> である．<span class="math inline">\(f(1.0)\)</span> と <span class="math inline">\(f(1.5)\)</span> の符号を考えよう． 返ってくる区間（2要素ベクトル）を予想せよ．</p>
+</div>
+</div>
+<div id="18" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bisect</span>(f, <span class="fl">1.0</span>, <span class="fl">2.0</span>)   <span class="co"># which half comes back?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{Float64}:
+ 1.0
+ 1.5</code></pre>
+</div>
+</div>
+<p>予想どおり区間 <span class="math inline">\([1.0, 1.5]\)</span> が返り，<strong>幅が半分</strong> になった． そして新しい区間にも <span class="math inline">\(\sqrt{2} \approx 1.41\)</span> が含まれている．</p>
+</section>
+<section id="sec-repeat" class="level2" data-index="関数>再利用, 戻り値">
+<h2 data-index="関数>再利用, 戻り値" class="anchored" data-anchor-id="sec-repeat">繰り返し呼ぶ：ベタ書きが1行に</h2>
+<p>関数にしたので，<strong>同じ1行を繰り返す</strong> だけで区間がどんどん狭まる． 返ってきた2要素ベクトル <code>ab</code> の両端 <code>ab[1]</code>，<code>ab[2]</code>（<a href="./ch02.html">第2回</a>の添字）を， 次の <code>bisect</code> の引数に渡す．</p>
+<div id="20" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> [<span class="fl">1.0</span>, <span class="fl">2.0</span>]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])    <span class="co"># 1 step -&gt; interval halved</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{Float64}:
+ 1.0
+ 1.5</code></pre>
+</div>
+</div>
+<div id="22" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])    <span class="co"># halved again</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{Float64}:
+ 1.25
+ 1.5</code></pre>
+</div>
+</div>
+<div id="24" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])    <span class="co"># once more</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{Float64}:
+ 1.40625
+ 1.4375</code></pre>
+</div>
+</div>
+<p>区間はどんどん狭まり，<span class="math inline">\(\sqrt{2} \approx 1.41421\)</span> を <strong>挟み込んで</strong> いく． <a href="./ch06.html">第6回</a>のベタ書きが，関数化によって <strong>同じ1行の繰り返し</strong> になった．</p>
+<p>メイン側の流れを図にすると <a href="#fig-pad-bisect-main" class="quarto-xref">図&nbsp;2</a> のようになる．</p>
+<div id="fig-pad-bisect-main" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pad-bisect-main-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/pad/pad-bisection-main.drawio.svg" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pad-bisect-main-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+図&nbsp;2: メイン側の構造（PAD）．区間 <code>ab</code> を初期化し，<strong>同じ1行</strong> <code>ab = bisect(f, ab[1], ab[2])</code> を繰り返すだけで区間が半分ずつ狭まる（網掛けが関数呼び出し）．
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-scope" class="level2" data-index="局所変数, スコープ, カプセル化">
+<h2 data-index="局所変数, スコープ, カプセル化" class="anchored" data-anchor-id="sec-scope">局所変数とスコープ：関数の中の名前は外に漏れない</h2>
+<p><code>bisect</code> の中で使った <code>c</code> は <strong>局所変数</strong> である． 局所変数は <strong>関数の中だけで有効</strong> で，関数の外には影響しない． この「有効範囲」を <strong>スコープ</strong> という．</p>
+<p>これを落とし穴の例で確かめよう．関数の外で <code>c = 999</code> としておき， <code>bisect</code> を呼んだあと，外の <code>c</code> がどうなるかを見る． <code>bisect</code> の中にも <code>c</code> という名前があるが，それは <strong>別物</strong>（関数内の局所の名札）である．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>外で <code>c = 999</code> としてから <code>bisect(f, 1.0, 2.0)</code> を呼ぶと， そのあと外の <code>c</code> はいくつになるか？ （<code>bisect</code> の中では <code>c = (a+b)/2 = 1.5</code> を計算しているが…）</p>
+</div>
+</div>
+<div id="26" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="fl">999</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bisect</span>(f, <span class="fl">1.0</span>, <span class="fl">2.0</span>)  <span class="co"># inside, c=1.5 is computed</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>c                    <span class="co"># did the call change the outer c?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>999</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：関数内で外の変数を書き換えたつもり
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>「<code>bisect</code> の中で <code>c = 1.5</code> を計算したのだから，外の <code>c</code> も <code>1.5</code> になるはず」 と考えるのは <strong>誤り</strong> である． 関数内の <code>c</code> は <strong>局所変数</strong> なので，外の <code>c</code>（= 999）とは無関係であり， 呼出し後も外の <code>c</code> は <strong>変わらない</strong>．</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>なぜ局所変数なのか：スコープこそ「安全な再利用」の理由
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>名前が漏れないからこそ，関数は <strong>安心して何度でも使い回せる</strong>． もし関数内の <code>c</code> が外の <code>c</code> を書き換えてしまうなら， <code>bisect</code> を呼ぶたびに，外で使っている変数が知らぬ間に壊される恐れがある．</p>
+<p>局所変数（スコープ）は，関数の中身を外から切り離して <strong>包み込む</strong>（カプセル化）仕組みであり， これは「式に名前をつける」以上の価値である． <a href="./ch01.html">第1回</a>の <strong>札モデル</strong> と地続きで，<strong>関数の中は局所の名札の世界</strong> だと考えればよい．</p>
+</div>
+</div>
+</section>
+<section id="sec-arity" class="level2" data-index="引数>個数, エラー>MethodError">
+<h2 data-index="引数>個数, エラー>MethodError" class="anchored" data-anchor-id="sec-arity">落とし穴：引数の数が合わないとき</h2>
+<p><code>bisect(f, a, b)</code> は <strong>3つの引数</strong> を受け取る関数として定義した． 引数の数が合わないと，Julia は <strong>一致する定義を見つけられず</strong> エラーになる．</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：引数が足りない
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>bisect(1.0, 2.0)</code> は引数が2つしかないため，<code>MethodError</code>（一致する定義がない）になる．</p>
+</div>
+</div>
+<div id="28" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@errmsg</span> <span class="fu">bisect</span>(<span class="fl">1.0</span>, <span class="fl">2.0</span>)     <span class="co"># only 2 arguments -&gt; MethodError</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<div class="ansi-escaped-output">
+<pre>MethodError: no method matching bisect(::Float64, ::Float64)
+The function `bisect` exists, but no method is defined for this combination of argument types.
+
+Closest candidates are:
+  bisect(::Any, ::Any, <span class="ansi-bright-red-fg">::Any</span>)
+<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">Main.Notebook</span> <span class="ansi-bright-black-fg">~/Documents/__Class/26w-MSE-prog/memoProgClass2026w-work/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">ch07.qmd:103</span>
+
+</pre>
+</div>
+</div>
+</div>
+<p>引数は <strong>過不足なく</strong> 渡す，という約束（インタフェース）を守る必要がある．</p>
+</section>
+<section id="sec-summary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-summary">今回のまとめ</h2>
+<ul>
+<li><strong>代入文形式</strong> <code>f(x) = x^2 - 2</code>：式に名前をつける＝関数定義．<code>x</code> が <strong>引数</strong>，計算結果が <strong>戻り値</strong>．</li>
+<li><strong>ブロック形式</strong> <code>function … end</code>：複数行の処理を関数に．<code>return</code> した値が <strong>戻り値</strong>．</li>
+<li>はさみうちの1ステップを <code>bisect(f, a, b)</code> に括り出し，新区間を <strong>2要素ベクトル</strong> <code>[a, c]</code>／<code>[c, b]</code> で返す（判定したい関数 <code>f</code> も引数で渡す）．</li>
+<li>関数にすると，<strong>同じ1行の繰り返し</strong> で区間が半分ずつ狭まり <span class="math inline">\(\sqrt{2}\)</span> を挟み込む．</li>
+<li>関数内の <code>c</code> は <strong>局所変数</strong>．有効範囲（<strong>スコープ</strong>）は関数の中だけで，外の同名変数に影響しない．</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>練習
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><code>bisect(f, 1.0, 1.5)</code> の戻り値を <strong>予測してから</strong> 確かめよ（中点は <span class="math inline">\(c = 1.25\)</span>，<span class="math inline">\(f(1.25)\)</span> の符号を考える）．</li>
+<li><code>ab = [1.0, 2.0]</code> から <code>ab = bisect(f, ab[1], ab[2])</code> を <strong>6回</strong> 繰り返し，区間の幅が <span class="math inline">\(\sqrt{2}\)</span> をどれだけ細かく挟むか観察せよ．</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="sec-discuss" class="level2">
+<h2 class="anchored" data-anchor-id="sec-discuss">みんなで考えよう</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>答えは配りません
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>近くの人と話し合う．</p>
+</div>
+</div>
+<p>座標の並び <code>xs</code>，<code>ys</code> を受け取り，重心（頂点の座標の平均）を2要素ベクトルで返す関数を作るとする．</p>
+<ol type="1">
+<li>座標の並びが閉じている（始点が最後に繰り返されている）かどうかを，<strong>関数の中で判定する</strong> べきか．それとも「閉じていない並びを渡す」約束にして <strong>呼ぶ側に任せる</strong> べきか．</li>
+<li>関数の中で判定するなら，どんな条件で判定すればよいか．</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "コピーしました");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "コピーしました");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ch06.html" class="pagination-link" aria-label="第6回：条件分岐とはさみうち">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">第6回：条件分岐とはさみうち</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ch08.html" class="pagination-link" aria-label="第8回：配列の生成・要素代入と篩">
+        <span class="nav-page-text">第8回：配列の生成・要素代入と篩</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

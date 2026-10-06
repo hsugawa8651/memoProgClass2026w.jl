@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>第12回：反復の設計と数値積分 – プログラミング演習（2026）</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ch13.html" rel="next">
+<link href="./ch11.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d3f3448f837ff03356db176d8adb603.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch12.html">第12回：反復の設計と数値積分</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">プログラミング演習（2026）</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">はじめに</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第1回：変数・代入・再代入</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第2回：ベクトルと基本プロット</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第3回：for文・総和・パラメータ作図</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第4回：対数グラフで直線化・数式モード</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第5回：平面図形の変形</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第6回：条件分岐とはさみうち</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第7回：関数定義の初歩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第8回：配列の生成・要素代入と篩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第9回：整数・剰余と互除法</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第10回：浮動小数点と数値誤差</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第11回：復習</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch12.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">第12回：反復の設計と数値積分</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第13回：関数の作り込み</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第14回：行列と回転行列</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第15回：複素数とガウス平面</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">さらに学ぶために</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-comprehension" id="toc-sec-comprehension" class="nav-link active" data-scroll-target="#sec-comprehension">内包表記：値の列を一気に作る</a></li>
+  <li><a href="#sec-converge" id="toc-sec-converge" class="nav-link" data-scroll-target="#sec-converge">収束ループ：許容誤差で打ち切る</a></li>
+  <li><a href="#sec-trapezoid" id="toc-sec-trapezoid" class="nav-link" data-scroll-target="#sec-trapezoid">数値積分：台形則を関数にまとめる</a></li>
+  <li><a href="#sec-error-order" id="toc-sec-error-order" class="nav-link" data-scroll-target="#sec-error-order">発展：誤差の減り方と両対数グラフ</a>
+  <ul class="collapse">
+  <li><a href="#sec-loglog" id="toc-sec-loglog" class="nav-link" data-scroll-target="#sec-loglog">誤差 vs n を両対数グラフで</a></li>
+  </ul></li>
+  <li><a href="#sec-bad-trapezoid" id="toc-sec-bad-trapezoid" class="nav-link" data-scroll-target="#sec-bad-trapezoid">落とし穴：端点の係数 1/2 を忘れると</a></li>
+  <li><a href="#sec-pad" id="toc-sec-pad" class="nav-link" data-scroll-target="#sec-pad">アルゴリズムを図に描く（収束ループの PAD）</a></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary">今回のまとめ</a>
+  <ul class="collapse">
+  <li><a href="#この回で使った関数" id="toc-この回で使った関数" class="nav-link" data-scroll-target="#この回で使った関数">この回で使った関数</a></li>
+  </ul></li>
+  <li><a href="#sec-discuss" id="toc-sec-discuss" class="nav-link" data-scroll-target="#sec-discuss">みんなで考えよう</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">第12回：反復の設計と数値積分</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>今回の背骨は，<strong>「いつ止めるか」を自分で設計する反復</strong>である． これまでの <code>for</code> は「決まった回数」回すループだったが， 今回は <strong><code>while</code> ＋ <code>break</code></strong> で「<strong>項が十分小さくなったら打ち切る</strong>」収束ループを書く． そして<a href="./ch07.html">第7回</a>の関数化を使って <strong>数値積分（台形則）</strong> を関数にまとめ， <strong>厳密解への収束</strong>と <strong>誤差の減り方</strong>で検証する（L3）． あわせて，配列を一気に作る <strong>内包表記</strong> で，<a href="./ch02.html">第2回</a>からの配列の話を完成させる．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>今回のキーワード
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>内包表記</strong> <code>[f(k) for k in …]</code>：値の列を <strong>一気に作る</strong>（ブロードキャストの仲間）．</li>
+<li><strong>収束ループ</strong>：<code>while</code> ＋ <code>break</code>，<strong>許容誤差</strong>で打ち切る（総和＝<a href="./ch03.html">第3回</a>の発展）．</li>
+<li><strong>数値積分（台形則）</strong>：和を関数にまとめ，<strong>厳密解 1/3</strong> と照合．</li>
+<li>「止まる条件」を雑にすると <strong>無限ループ</strong>（<a href="./ch10.html">第10回</a>・浮動小数点誤差の応用）．</li>
+</ul>
+</div>
+</div>
+<section id="sec-comprehension" class="level2" data-index="内包表記, 配列>内包表記">
+<h2 data-index="内包表記, 配列>内包表記" class="anchored" data-anchor-id="sec-comprehension">内包表記：値の列を一気に作る</h2>
+<p><code>[式 for 変数 in 範囲]</code> と書くと，<strong>範囲の各値について式を計算した配列</strong>ができる． これを <strong>内包表記</strong> という．<a href="./ch02.html">第2回</a>のブロードキャスト <code>t .^ 2</code> の仲間で， 「<strong>値の列をひとかたまり（エンティティ）で作る</strong>」道具である．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>[k^2 for k in 1:5]</code> は何になるか，<strong>実行する前に</strong>予想しよう．</p>
+</div>
+</div>
+<div id="4" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>[k<span class="op">^</span><span class="fl">2</span> for k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>]                 <span class="co"># vary k from 1 to 5 and list k^2</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>5-element Vector{Int64}:
+  1
+  4
+  9
+ 16
+ 25</code></pre>
+</div>
+</div>
+<p>配列の要素をすべて足すには <strong><code>sum</code></strong> を使う．<code>sum([1, 2, 3])</code> は <code>6</code> である．</p>
+<p>さらに，内包表記を <code>sum</code> に渡すときは <strong>角括弧を省ける</strong>． <code>sum(1/k^2 for k in 1:1000)</code> は <code>sum([1/k^2 for k in 1:1000])</code> と同じ結果で， 配列を作らずに足していくぶん無駄がない．</p>
+<p>たとえば級数和 <span class="math inline">\(\displaystyle\sum_{k=1}^{1000} \frac{1}{k^2}\)</span> は次のように書ける． これは有名な <strong>バーゼル問題</strong>の和で，項数を無限に増やすと <span class="math inline">\(\pi^2/6\)</span> に近づく．</p>
+<div id="6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fl">1</span><span class="op">/</span>k<span class="op">^</span><span class="fl">2</span> <span class="cf">for</span> k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>)         <span class="co"># 1/1 + 1/4 + 1/9 + ... + 1/1000^2</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>1.6439345666815615</code></pre>
+</div>
+</div>
+<div id="8" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cn">pi</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">6</span>                           <span class="co"># reference (exact value)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>1.6449340668482264</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ノート
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>1000</code> 項では小数第3位あたりで <span class="math inline">\(\pi^2/6\)</span> とずれる． これは「まだ足し足りない」だけで，項を増やせば近づく． <strong>「どこまで足せば十分か」を自分で決めて打ち切る</strong>のが，次の収束ループである．</p>
+</div>
+</div>
+</section>
+<section id="sec-converge" class="level2" data-index="収束, while文, break, 総和">
+<h2 data-index="収束, while文, break, 総和" class="anchored" data-anchor-id="sec-converge">収束ループ：許容誤差で打ち切る</h2>
+<p><a href="./ch09.html">第9回</a>の互除法では，<code>while</code> の <strong>止まる理由</strong> がはっきりしていた （余りは必ず小さくなり，0 以上の整数だから）． 今回は <strong>止まる理由が自明でない</strong> 場合を設計する．</p>
+<p><code>while true … end</code> は無限に回るループで，途中で <strong><code>break</code></strong>（<a href="./ch06.html">第6回</a>）に達すると抜ける． これを使えば，<strong>項 <code>term</code> が十分小さくなったら止める</strong>，という収束ループが書ける． 総和（<a href="./ch03.html">第3回</a>の <code>s = s + x</code>）の発展形である． なお，これから使う <code>s += term</code> は <strong><code>s = s + term</code> の短い書き方</strong>である．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>次のセルの <code>s</code> は，先ほどの <code>sum(1/k^2 …)</code> や <span class="math inline">\(\pi^2/6\)</span> と <strong>近い値</strong>になるだろうか？</p>
+</div>
+</div>
+<div id="10" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="cn">true</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    term <span class="op">=</span> <span class="fl">1</span><span class="op">/</span>k<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    s <span class="op">+=</span> term                      <span class="co"># accumulate (s = s + term)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> term <span class="op">&lt;</span> <span class="fl">1e-10</span>               <span class="co"># stop condition: term is small enough</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    k <span class="op">+=</span> <span class="fl">1</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>s                                  <span class="co"># compare with pi^2/6</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>1.6449240669982403</code></pre>
+</div>
+</div>
+<p>打ち切りは <code>if</code>（<a href="./ch06.html">第6回</a>）で書き，条件が成り立ったら <code>break</code> で抜ける． 項 <code>1/k^2</code> は <span class="math inline">\(k\)</span> が増えるほど <strong>単調に小さくなる</strong>から， いつか必ず <code>1e-10</code> を下回り，<strong>ループは確実に止まる</strong>．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>発展：<code>&amp;&amp;</code> を使った短い書き方（必修ではない）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>term &lt; 1e-10 &amp;&amp; break</code> と1行で書くこともある． <code>&amp;&amp;</code> は <strong>左が偽なら右を評価しない</strong>（短絡評価）ので，左が真のときだけ <code>break</code> に達する． <a href="./ch06.html">第6回</a>では <code>&amp;&amp;</code> を「条件をつなぐ かつ」として使ったが， 右側に <strong>文</strong> を置くこの書き方も，Julia のコードでよく見かける．</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>止まることを確かめよう（L2→L3）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>term &lt; 1e-10</code> で打ち切ると，<span class="math inline">\(1/k^2 &lt; 10^{-10}\)</span> すなわち <span class="math inline">\(k &gt; 10^5\)</span> で止まる． <strong>許容誤差を厳しくすると項数は増えるが，有限回で必ず止まる</strong>ことを， <code>tol</code> を変えて確かめてみよう．</p>
+</div>
+</div>
+<p>下のセルでは，文字列の中に <strong><code>$</code></strong> を書いて変数の値を埋め込んでいる （<code>"k = $k"</code> は <code>k</code> の値に置き換わる）．これを <strong>文字列補間</strong> という．</p>
+<div id="12" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tol <span class="kw">in</span> [<span class="fl">1e-8</span>, <span class="fl">1e-10</span>, <span class="fl">1e-12</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="cn">true</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        term <span class="op">=</span> <span class="fl">1</span><span class="op">/</span>k<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        s <span class="op">+=</span> term</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> term <span class="op">&lt;</span> tol</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        k <span class="op">+=</span> <span class="fl">1</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">"tol = </span><span class="sc">$</span>tol<span class="st">  -&gt;  k = </span><span class="sc">$</span>k<span class="st"> terms, stop,  s = </span><span class="sc">$</span>s<span class="st">"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tol = 1.0e-8  -&gt;  k = 10001 terms, stop,  s = 1.6448340818460654
+tol = 1.0e-10  -&gt;  k = 100001 terms, stop,  s = 1.6449240669982403
+tol = 1.0e-12  -&gt;  k = 1000001 terms, stop,  s = 1.6449330668497701</code></pre>
+</div>
+</div>
+<p>許容誤差を厳しくする（<code>tol</code> を小さくする）ほど停止までの項数 <code>k</code> は増えるが， <strong>どれも有限回で止まっている</strong>．これが「<strong>設計された反復</strong>」である．</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：止まらない収束ループ（無限ループ）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>次のコードは <strong>絶対に実行してはいけない</strong>（レンダリングや REPL が固まる）． 打ち切りを <strong><code>!=</code>（等しくない）</strong> で書くと，止まらないことがある． <code>0.1</code> は2進で正確に表せないので，<code>0.1</code> を足し続けても <code>x</code> が <strong>ちょうど <code>1.0</code> になる瞬間はない</strong>． 条件 <code>x != 1.0</code> は永久に成り立ち，<strong>無限ループ</strong>になる．</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> x <span class="op">!=</span> <span class="fl">1.0</span>                <span class="co"># equality on floats: x never lands exactly on 1.0</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">+=</span> <span class="fl">0.1</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    s <span class="op">+=</span> x</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span>                           <span class="co"># 0.1 is not exact in binary (do not run)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p>設計の鉄則は <strong>(1) 打ち切りに等号（<code>==</code>・<code>!=</code>）を使わない</strong>， <strong>(2) 反復上限（最大回数）も併せて設ける</strong>ことである． この例なら，不等号 <code>x &lt; 1.0</code> で打ち切る，回数を整数で数えて <code>x = 0.1k</code> と作る，など 直し方は一つではない． <a href="./ch10.html">第10回</a>で見た「浮動小数点数には限界がある」という事実の，反復への応用である．</p>
+</div>
+</div>
+</section>
+<section id="sec-trapezoid" class="level2" data-index="数値積分, 台形則, 関数>定義">
+<h2 data-index="数値積分, 台形則, 関数>定義" class="anchored" data-anchor-id="sec-trapezoid">数値積分：台形則を関数にまとめる</h2>
+<p>定積分 <span class="math inline">\(\displaystyle\int_a^b f(x)\,dx\)</span> は，区間を <span class="math inline">\(n\)</span> 個の細い帯に切り， 各帯を <strong>台形</strong>で近似して足し合わせると，おおよその値が求まる．これが <strong>台形則</strong>である．</p>
+<p><span class="math display">\[
+\int_a^b f(x)\,dx \approx h\left(\frac{f(a)+f(b)}{2} + \sum_{k=1}^{n-1} f(a+kh)\right),
+\qquad h = \frac{b-a}{n}
+\]</span></p>
+<p>両端 <span class="math inline">\(f(a),\,f(b)\)</span> だけ <strong>係数 <span class="math inline">\(1/2\)</span></strong>，内側の点は係数 <span class="math inline">\(1\)</span> で足す，という形である． <a href="./ch07.html">第7回</a>で学んだ <strong>関数定義</strong> <code>function … end</code> を使って，これを関数にまとめよう． ここでは積分する関数 <code>f</code> は <strong>外で定義</strong>しておく（<a href="./ch07.html">第7回</a>の <code>bisect</code> のように引数で渡す形は，<a href="./ch13.html">第13回</a>で改めて整理する）．</p>
+<div id="14" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span>                         <span class="co"># exact value: integral of x^2 from 0 to 1 = 1/3</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">trapezoid</span>(a, b, n)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> (b <span class="op">-</span> a) <span class="op">/</span> n</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> (<span class="fu">f</span>(a) <span class="op">+</span> <span class="fu">f</span>(b)) <span class="op">/</span> <span class="fl">2</span>          <span class="co"># endpoints get coefficient 1/2 (the key point)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>n<span class="op">-</span><span class="fl">1</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        s <span class="op">+=</span> <span class="fu">f</span>(a <span class="op">+</span> k<span class="op">*</span>h)            <span class="co"># interior points get coefficient 1 (accumulate)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> s <span class="op">*</span> h</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">trapezoid</span>(<span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">100</span>)               <span class="co"># close to 1/3 = 0.3333...</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.33335000000000004</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>厳密解と照合しよう（L2）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\displaystyle\int_0^1 x^2\,dx = \left[\frac{x^3}{3}\right]_0^1 = \frac{1}{3}\)</span> である． <code>trapezoid(0, 1, 100)</code> はこの <strong>1/3</strong> にどれだけ近いか確かめよう．</p>
+</div>
+</div>
+<div id="16" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">/</span><span class="fl">3</span>                                <span class="co"># exact value</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.3333333333333333</code></pre>
+</div>
+</div>
+<div id="18" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">abs</span>(<span class="fu">trapezoid</span>(<span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">100</span>) <span class="op">-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span>)    <span class="co"># difference from exact value (= error)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>1.6666666666720342e-5</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-error-order" class="level2" data-index="数値積分>誤差, 収束, 検証>L3">
+<h2 data-index="数値積分>誤差, 収束, 検証>L3" class="anchored" data-anchor-id="sec-error-order">発展：誤差の減り方と両対数グラフ</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ノート
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ここから先（誤差の <strong>次数</strong> と <strong>両対数グラフ</strong>）は <strong>発展（必修ではない）</strong>． 台形則が「どれだけ速く正確になるか」を深掘りする．読み飛ばして，次の <strong>「落とし穴：端点の係数 1/2 を忘れると」</strong> へ進んでよい．</p>
+</div>
+</div>
+<p>台形則の誤差は <strong>刻み幅 <span class="math inline">\(h\)</span> の2乗に比例</strong>する（誤差 <span class="math inline">\(\propto h^2\)</span>）ことが知られている． <span class="math inline">\(n\)</span> を2倍にすると <span class="math inline">\(h\)</span> は半分になるので，<strong>誤差はおよそ <span class="math inline">\(1/4\)</span></strong> になるはずである． 分割数 <code>n</code> を変えて，厳密解 1/3 との差を並べてみよう．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1→L3）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>n</code> を <code>10, 20, 40, …</code> と <strong>2倍ずつ</strong>にすると，誤差はどう減るか？ （半分？　<span class="math inline">\(1/4\)</span>？　<span class="math inline">\(1/8\)</span>？）</p>
+</div>
+</div>
+<div id="20" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>exact <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> [<span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">40</span>, <span class="fl">80</span>, <span class="fl">160</span>]</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> <span class="fu">abs</span>(<span class="fu">trapezoid</span>(<span class="fl">0</span>, <span class="fl">1</span>, n) <span class="op">-</span> exact)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">"n = </span><span class="sc">$</span>n<span class="st">  -&gt;  error = </span><span class="sc">$</span>err<span class="st">"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n = 10  -&gt;  error = 0.0016666666666667607
+n = 20  -&gt;  error = 0.0004166666666667318
+n = 40  -&gt;  error = 0.00010416666666673846
+n = 80  -&gt;  error = 2.6041666666754004e-5
+n = 160  -&gt;  error = 6.510416666771768e-6</code></pre>
+</div>
+</div>
+<p><code>n</code> を2倍にするたびに誤差がおよそ <strong><span class="math inline">\(1/4\)</span> ずつ</strong>小さくなっていれば， <span class="math inline">\(\,\)</span>誤差 <span class="math inline">\(\propto h^2\,\)</span> という理屈が確かめられたことになる（L3検証）．</p>
+<section id="sec-loglog" class="level3" data-index="両対数, 数値積分>誤差, プロット">
+<h3 data-index="両対数, 数値積分>誤差, プロット" class="anchored" data-anchor-id="sec-loglog">誤差 vs n を両対数グラフで</h3>
+<p>誤差と <code>n</code> の関係は，<strong>両対数グラフ</strong>にすると <strong>直線</strong>になり，その <strong>傾き</strong>が 収束の次数（ここでは <span class="math inline">\(-2\)</span>）を表す．<a href="./ch04.html">第4回</a>の「対数で線形化」が，ここで効いてくる． 内包表記で誤差の列を一気に作り，<code>xscale=:log10, yscale=:log10</code> で描く．</p>
+<div id="22" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>ns   <span class="op">=</span> [<span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">40</span>, <span class="fl">80</span>, <span class="fl">160</span>, <span class="fl">320</span>]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>errs <span class="op">=</span> [<span class="fu">abs</span>(<span class="fu">trapezoid</span>(<span class="fl">0</span>, <span class="fl">1</span>, n) <span class="op">-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span>) for n <span class="kw">in</span> ns]   <span class="co"># error sequence via comprehension</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ns, errs,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>     xscale <span class="op">=</span> <span class="op">:</span>log10, yscale <span class="op">=</span> <span class="op">:</span>log10,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>     marker <span class="op">=</span> <span class="op">:</span>circle,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>     xlabel <span class="op">=</span> <span class="st">"n (divisions)"</span>, ylabel <span class="op">=</span> <span class="st">"error"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>     title  <span class="op">=</span> <span class="st">"trapezoid error (log-log)"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<img src="data:image/png;base64,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">
+</div>
+</div>
+<p>両対数で <strong>きれいな直線</strong>になり，<code>n</code> が10倍で誤差が100倍小さくなる （縦に2目盛り下がる）なら，傾きは <span class="math inline">\(-2\)</span>，すなわち <strong>誤差 <span class="math inline">\(\propto n^{-2} \propto h^2\)</span></strong> である．</p>
+</section>
+</section>
+<section id="sec-bad-trapezoid" class="level2" data-index="台形則, 落とし穴の例, 検証>L3">
+<h2 data-index="台形則, 落とし穴の例, 検証>L3" class="anchored" data-anchor-id="sec-bad-trapezoid">落とし穴：端点の係数 1/2 を忘れると</h2>
+<p>台形則でいちばん多い失敗が，<strong>両端 <span class="math inline">\(f(a),\,f(b)\)</span> の係数 <span class="math inline">\(1/2\)</span> を忘れる</strong>ことである． 端点も内側と同じ係数 <span class="math inline">\(1\)</span> で足してしまうと，台形則ではなく別の和になる． 次の <code>trapezoid_bad</code> は <code>s = f(a) + f(b)</code>（<span class="math inline">\(1/2\)</span> 抜き）にした <strong>誤った関数</strong>である．</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：端点係数 1/2 の欠落
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>下の関数は計算自体は止まる（エラーは出ない）が， 端点を余分に足しているぶん <strong>厳密解 1/3 から系統的にずれる</strong>． 「エラーが出ない＝正しい」ではないことに注意．<strong>厳密解との照合</strong>で初めて気づける．</p>
+</div>
+</div>
+<div id="24" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">trapezoid_bad</span>(a, b, n)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> (b <span class="op">-</span> a) <span class="op">/</span> n</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> <span class="fu">f</span>(a) <span class="op">+</span> <span class="fu">f</span>(b)                <span class="co"># forgot to multiply by 1/2 (pitfall)</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>n<span class="op">-</span><span class="fl">1</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        s <span class="op">+=</span> <span class="fu">f</span>(a <span class="op">+</span> k<span class="op">*</span>h)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> s <span class="op">*</span> h</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">trapezoid_bad</span>(<span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">100</span>)           <span class="co"># an off value, not 1/3</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.33835000000000004</code></pre>
+</div>
+</div>
+<div id="26" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">trapezoid_bad</span>(<span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1000</span>)          <span class="co"># approaches 1/3 only like h (order 1), far slower</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.33383349999999995</code></pre>
+</div>
+</div>
+<p>正しい <code>trapezoid</code> は <code>n=100</code> で誤差 <span class="math inline">\(\sim 10^{-5}\)</span> だったのに対し， <code>trapezoid_bad</code> は端点を余分に足したぶん <span class="math inline">\(\,\frac{f(a)+f(b)}{2}h\,\)</span> だけ上にずれる （この例では <span class="math inline">\(f(0)+f(1)=1\)</span> なので <span class="math inline">\(h/2\)</span>）．<code>n</code> を増やせば 1/3 に近づくが， ずれは <span class="math inline">\(h\)</span> に比例して減るだけで，正しい台形則（<span class="math inline">\(h^2\)</span>）より <strong>桁違いに遅い</strong>． <strong>厳密解 1/3 との照合</strong>（L2）だけでなく，<strong>誤差が <span class="math inline">\(h\)</span> でしか減らない</strong> という減り方の違い（L3）が，この種の係数ミスをあぶり出す．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>AI が書いたコードの検証に
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>台形則は AI にもよく書かせるが，<strong>端点係数 <span class="math inline">\(1/2\)</span> の欠落</strong>や， <strong>左リーマン和（誤差 <span class="math inline">\(\propto h\)</span>）を台形則（誤差 <span class="math inline">\(\propto h^2\)</span>）と取り違える</strong>誤りが起きやすい． 「<strong>厳密解 1/3 への収束</strong>」と「<strong>誤差の減り方（<span class="math inline">\(h\)</span> か <span class="math inline">\(h^2\)</span> か）</strong>」の2点で照合すれば， コードが本当に台形則になっているかを見抜ける．</p>
+</div>
+</div>
+</section>
+<section id="sec-pad" class="level2">
+<h2 class="anchored" data-anchor-id="sec-pad">アルゴリズムを図に描く（収束ループの PAD）</h2>
+<p>収束ループは，<strong>「初期化 → 同じ処理を繰り返す → 打ち切り条件で抜ける」</strong>という骨組みである． <a href="./ch03.html">第3回</a>の反復の箱にならって，次の形を手元で描いてみよう．</p>
+<ul>
+<li>ループの外：<code>s = 0.0</code>，<code>k = 1</code>（<strong>初期化</strong>）</li>
+<li>反復の箱：<code>term</code> を計算 → <code>s</code> に足す → <strong><code>term &lt; tol</code> なら抜ける</strong> → <code>k</code> を1増やす</li>
+</ul>
+<p>「初期化はループの外，打ち切りはループの中」という設計が，目で見て分かる．</p>
+</section>
+<section id="sec-summary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-summary">今回のまとめ</h2>
+<ul>
+<li><strong>内包表記</strong> <code>[f(k) for k in …]</code> は値の列を一気に作る（ブロードキャストの仲間）．<code>sum(… for …)</code> で級数和にも使える．</li>
+<li><strong>収束ループ</strong> は <code>while true …</code> の中で <code>if</code> が条件を見て <code>break</code> で抜ける形．項が単調に小さくなるなら <strong>有限回で必ず止まる</strong>．許容誤差を厳しくすると項数は増える．</li>
+<li>打ち切りを <strong>等号</strong>（<code>!=</code>）で書くと止まらないことがある（小数はぴったりの値にならない）．<strong>不等号で打ち切り，反復上限も設ける</strong>．</li>
+<li><strong>台形則</strong>は端点 <span class="math inline">\(f(a),f(b)\)</span> を <strong>係数 <span class="math inline">\(1/2\)</span></strong>，内側を係数 <span class="math inline">\(1\)</span> で足す．<code>function … end</code> で関数にまとめる（<code>f</code> は外で定義）．</li>
+<li>検証は <strong>厳密解 1/3 との照合</strong>（端点係数 <span class="math inline">\(1/2\)</span> の欠落も，厳密解との差で気づく）．</li>
+<li>（発展）<strong>誤差 <span class="math inline">\(\propto h^2\)</span></strong>：<code>n</code> を2倍にすると誤差は <span class="math inline">\(1/4\)</span>，両対数グラフで傾き <span class="math inline">\(-2\)</span>．</li>
+</ul>
+<!-- doc-links: generated by build-doc-links.py -- do not edit by hand -->
+<section id="この回で使った関数" class="level3">
+<h3 class="anchored" data-anchor-id="この回で使った関数">この回で使った関数</h3>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.abs"><code>abs</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.abs">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/base/#Base.error"><code>error</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/base.html#Base.error">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/io-network/#Base.println"><code>println</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/io-network.html#Base.println">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/collections/#Base.sum"><code>sum</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/collections.html#Base.sum">日本語訳</a>）</li>
+<li><code>plot</code> … <a href="https://docs.juliaplots.org/stable/basics/">Plots.jl のドキュメント</a>（日本語訳なし）</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>練習
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><code>sum(1/k^2 for k in 1:N)</code> で <code>N = 10, 100, 1000</code> を計算し，それぞれ <span class="math inline">\(\pi^2/6\)</span> との差を予測してから確かめよ．</li>
+<li>収束ループの打ち切りを <code>term &lt; 1e-6</code> に変えると，停止までの項数 <code>k</code> は <code>1e-10</code> のときより増えるか減るか，予測してから確かめよ．</li>
+<li><code>f(x) = x^3</code> と定義し直し，<code>trapezoid(0, 1, 100)</code> が厳密解 <span class="math inline">\(\int_0^1 x^3 dx = 1/4\)</span> に近づくか確かめよ．</li>
+<li>落とし穴の <code>trapezoid_bad</code> を正しい <code>trapezoid</code> に直し，<code>n = 100</code> での厳密解 1/3 との誤差が <strong>どれだけ小さくなったか</strong>を説明せよ．</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-discuss" class="level2">
+<h2 class="anchored" data-anchor-id="sec-discuss">みんなで考えよう</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>答えは配りません
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>近くの人と話し合う．</p>
+</div>
+</div>
+<p>厳密解を知らない積分，例えば <span class="math inline">\(\int_0^1 e^{-x^2}\,dx\)</span> を台形則で求めたい （指数関数 <span class="math inline">\(e^x\)</span> は <strong><code>exp(x)</code></strong> と書く．<code>f(x) = exp(-x^2)</code> と定義し直して <code>trapezoid(0, 1, n)</code> を使う）．</p>
+<ol type="1">
+<li>誤差が <code>1e-6</code> 以下になる <code>n</code> を，厳密解を使わずにどう決めればよいか．</li>
+<li>その方法で「正しい値に近づいている」と言えるのはどんな場合か．</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "コピーしました");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "コピーしました");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ch11.html" class="pagination-link" aria-label="第11回：復習">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">第11回：復習</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ch13.html" class="pagination-link" aria-label="第13回：関数の作り込み">
+        <span class="nav-page-text">第13回：関数の作り込み</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

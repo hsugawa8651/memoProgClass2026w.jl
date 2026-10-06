@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>第10回：浮動小数点と数値誤差 – プログラミング演習（2026）</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ch11.html" rel="next">
+<link href="./ch09.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d3f3448f837ff03356db176d8adb603.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch10.html">第10回：浮動小数点と数値誤差</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">プログラミング演習（2026）</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">はじめに</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第1回：変数・代入・再代入</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第2回：ベクトルと基本プロット</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第3回：for文・総和・パラメータ作図</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第4回：対数グラフで直線化・数式モード</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第5回：平面図形の変形</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第6回：条件分岐とはさみうち</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第7回：関数定義の初歩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第8回：配列の生成・要素代入と篩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第9回：整数・剰余と互除法</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">第10回：浮動小数点と数値誤差</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第11回：復習</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第12回：反復の設計と数値積分</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第13回：関数の作り込み</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第14回：行列と回転行列</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第15回：複素数とガウス平面</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">さらに学ぶために</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-float" id="toc-sec-float" class="nav-link active" data-scroll-target="#sec-float">表せない数：0.1 は丸められている</a></li>
+  <li><a href="#sec-swamping" id="toc-sec-swamping" class="nav-link" data-scroll-target="#sec-swamping">桁が大きく違う数を足す</a></li>
+  <li><a href="#sec-cancel" id="toc-sec-cancel" class="nav-link" data-scroll-target="#sec-cancel">近い数どうしを引く</a></li>
+  <li><a href="#sec-numdiff" id="toc-sec-numdiff" class="nav-link" data-scroll-target="#sec-numdiff">数値微分：小さくしすぎると悪くなる（U字）</a></li>
+  <li><a href="#sec-isapprox" id="toc-sec-isapprox" class="nav-link" data-scroll-target="#sec-isapprox">正しい比較：<code>==</code> ではなく <code>isapprox</code>（<code>≈</code>）</a></li>
+  <li><a href="#sec-naninf" id="toc-sec-naninf" class="nav-link" data-scroll-target="#sec-naninf">NaN と Inf：数でない結果</a></li>
+  <li><a href="#sec-removable" id="toc-sec-removable" class="nav-link" data-scroll-target="#sec-removable">発展：グラフに穴があく</a></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary">今回のまとめ</a>
+  <ul class="collapse">
+  <li><a href="#この回で使った関数" id="toc-この回で使った関数" class="nav-link" data-scroll-target="#この回で使った関数">この回で使った関数</a></li>
+  </ul></li>
+  <li><a href="#sec-discuss" id="toc-sec-discuss" class="nav-link" data-scroll-target="#sec-discuss">みんなで考えよう</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">第10回：浮動小数点と数値誤差</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>今回の核は，<strong>「浮動小数点は有限の有効数字である」</strong>ということに尽きる． コンピュータは小数を，仮数部が <strong>有限のビット</strong>しかない形で記憶する． だから <strong>表せない数は丸められ</strong>，計算の途中で <strong>桁が落ちる</strong>． <a href="./ch09.html">第9回</a>で学んだ「整数＝有限のビットの世界（2の補数）」と対をなす， もう一方の真実（<strong>計算機の数 ≠ 数学の数</strong>）が，ここで姿を現す．</p>
+<p>そして今回から，検証は新しい段階（L3）に入る． <strong>「ちゃんと動くし，もっともらしいのに，答えが微妙に違う」</strong>． この厄介な状況を，<strong>厳密に分かっている値との差</strong>で暴くのが今回の道具立てである．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ノート
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="./ch06.html">第6回</a>で <code>0.1 + 0.2 == 0.3</code> が <code>false</code> になり，驚いた（あるいは納得できなかった）人もいるだろう． 今回はその <strong>仕組みを説明する</strong>．「なぜそうなるのか」を言葉で言えることが目標である．</p>
+</div>
+</div>
+<section id="sec-float" class="level2" data-index="浮動小数点数, 有効数字, 仮数部">
+<h2 data-index="浮動小数点数, 有効数字, 仮数部" class="anchored" data-anchor-id="sec-float">表せない数：0.1 は丸められている</h2>
+<p><code>0.1</code> という何でもない小数が，実はそのままでは記憶できない． 2進数で <code>0.1</code> を表そうとすると <strong>無限に循環する</strong>ため，有限ビットの仮数部に収めるとき <strong>丸められる</strong>． その結果，足し算がきれいに揃わない．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>実行する前に予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>0.1 + 0.2</code> はいくつになるか？　また <code>0.1 + 0.2 == 0.3</code> は <code>true</code> か <code>false</code> か？</p>
+</div>
+</div>
+<div id="4" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span>            <span class="co"># look at the last digits</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.30000000000000004</code></pre>
+</div>
+</div>
+<div id="6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span> <span class="op">==</span> <span class="fl">0.3</span>     <span class="co"># true or false?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>false</code></pre>
+</div>
+</div>
+<p>「コンピュータがバグっている」のではない． 実際に <code>0.1</code> として格納されている値を，<code>big</code>（多倍長）で覗いてみよう．</p>
+<div id="8" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">big</span>(<span class="fl">0.1</span>)             <span class="co"># what the Float64 0.1 "really" is</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.1000000000000000055511151231257827021181583404541015625</code></pre>
+</div>
+</div>
+<p>ちょうど <code>0.1</code> ではなく，ごくわずかにずれた数が入っている． <code>0.1</code> も <code>0.2</code> も <code>0.3</code> もそれぞれ丸められており， <strong>丸めた結果の和</strong>と<strong>丸めた 0.3</strong> が一致しないために <code>==</code> が <code>false</code> になる．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>補足：Float64 はおよそ10進15〜16桁
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>コースで使う標準の小数は <code>Float64</code>（倍精度）で，仮数部は約53ビット， <strong>10進にして15〜16桁ぶんの有効数字</strong>しか持たない． それを超える細かさは表現できず，必ず丸められる．</p>
+</div>
+</div>
+</section>
+<section id="sec-swamping" class="level2" data-index="情報落ち, 有効数字">
+<h2 data-index="情報落ち, 有効数字" class="anchored" data-anchor-id="sec-swamping">桁が大きく違う数を足す</h2>
+<p><code>1e16</code> は <span class="math inline">\(10^{16}\)</span> を表す書き方である（<code>e</code> のうしろが10のべき乗の指数）． この大きな数に，<code>1</code> を足してみよう．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>1e16 + 1</code> は <code>1e16</code> より大きいはずだから，<code>1e16 + 1 == 1e16</code> は <code>false</code> ……だろうか？</p>
+</div>
+</div>
+<div id="10" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1e16</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">==</span> <span class="fl">1e16</span>     <span class="co"># true or false?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p><code>1e16</code> はすでに有効数字16桁ぎりぎりで， そこへ <code>1</code> を足しても，その <code>1</code> は表現できる細かさの <strong>外側</strong>にある． だから丸めると元の <code>1e16</code> に戻ってしまう．<strong>足したのに増えない</strong>のである． 桁が大きく違う数どうしを足すと，小さい方が有効数字の外にはみ出して消える． これを <strong>情報落ち</strong> という．</p>
+</section>
+<section id="sec-cancel" class="level2" data-index="桁落ち, 有効数字">
+<h2 data-index="桁落ち, 有効数字" class="anchored" data-anchor-id="sec-cancel">近い数どうしを引く</h2>
+<p>今度は，ほとんど等しい2つの数を引いてみよう．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>(1e16 + 1) - 1e16</code> はいくつか？　数学なら当然 <code>1.0</code> だが……</p>
+</div>
+</div>
+<div id="12" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1e16</span> <span class="op">+</span> <span class="fl">1</span>) <span class="op">-</span> <span class="fl">1e16</span>    <span class="co"># math says 1.0; what does Julia say?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>0.0</code></pre>
+</div>
+</div>
+<p>先ほどの情報落ちで <code>1e16 + 1</code> がすでに <code>1e16</code> に丸められているため， そこから <code>1e16</code> を引けば <strong>0.0</strong> になる． 本来あったはずの <code>1</code> の情報は，足した瞬間に失われていた．</p>
+<p>ほとんど等しい2つの数を引くと，上位の桁がきれいに打ち消し合い， <strong>残るのは誤差を含む下位の桁だけ</strong>になる．有効数字が一気に失われるこの現象を <strong>桁落ち</strong> という．</p>
+</section>
+<section id="sec-numdiff" class="level2" data-index="桁落ち, 数値微分, 有効数字">
+<h2 data-index="桁落ち, 数値微分, 有効数字" class="anchored" data-anchor-id="sec-numdiff">数値微分：小さくしすぎると悪くなる（U字）</h2>
+<p>桁落ちが現実の計算を壊す代表例が <strong>数値微分</strong>である． 微分の定義にならって，差分商で導関数を近似する：</p>
+<p><span class="math display">\[
+f'(x) \approx \frac{f(x+h) - f(x)}{h}
+\]</span></p>
+<p>理論上は <strong><span class="math inline">\(h\)</span> を小さくするほど近似はよくなる</strong>はずである． ところが分子 <span class="math inline">\(f(x+h) - f(x)\)</span> は <strong>近い数どうしの引き算</strong>＝桁落ちの巣窟であり， <span class="math inline">\(h\)</span> を小さくしすぎると誤差はかえって <strong>増える</strong>．</p>
+<p><code>f(x) = x^2</code> の <code>x = 1</code> での厳密値は <span class="math inline">\(f'(1) = 2\)</span>． これを既知の正解として，さまざまな <code>h</code> での誤差を見比べよう． <strong>誤差は「厳密値との差の大きさ」</strong>，すなわち <span class="math inline">\(|d - 2|\)</span> で測る． 絶対値は <strong><code>abs</code></strong> で計算する（<code>abs(-3)</code> は <code>3</code>）．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>h</code> をどんどん小さくしていくと，厳密値 <code>2</code> との誤差はどうなるか？ ずっと減り続けるだろうか？</p>
+</div>
+</div>
+<div id="14" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span>                       <span class="co"># exact value is f'(1) = 2</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> h <span class="kw">in</span> [<span class="fl">1e-1</span>, <span class="fl">1e-4</span>, <span class="fl">1e-8</span>, <span class="fl">1e-12</span>, <span class="fl">1e-15</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> (<span class="fu">f</span>(<span class="fl">1</span><span class="op">+</span>h) <span class="op">-</span> <span class="fu">f</span>(<span class="fl">1</span>)) <span class="op">/</span> h</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(h, <span class="st">"  approx "</span>, d, <span class="st">"  error "</span>, <span class="fu">abs</span>(d <span class="op">-</span> <span class="fl">2</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.1  approx 2.100000000000002  error 0.10000000000000187
+0.0001  approx 2.000099999999172  error 9.999999917198465e-5
+1.0e-8  approx 1.999999987845058  error 1.21549419418443e-8
+1.0e-12  approx 2.000177801164682  error 0.00017780116468202323
+1.0e-15  approx 2.220446049250313  error 0.22044604925031308</code></pre>
+</div>
+</div>
+<p>誤差は <strong>一旦減ってから，ある所を境に増えていく</strong>（<strong>U字</strong>になる）． 前半は近似の打ち切り誤差が減るから改善するが， 後半は分子の桁落ちが効いて，<code>h</code> で割ることで誤差が拡大する． <strong>理論（改善）と実測（途中から悪化）が食い違う</strong>．これが L3 検証の典型例である．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>補足：これが「L3」の誕生点
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>コードはエラーも出さず動き，結果ももっともらしい． それでも答えはずれている． こういう誤りは「動くかどうか」では見抜けない． <strong>厳密に分かっている値（ここでは 2）との差を取る</strong>ことで，初めて姿を現す． 今後 AI が書いたコードを検証するときも，この「既知解との差」が主役になる．</p>
+</div>
+</div>
+</section>
+<section id="sec-isapprox" class="level2" data-index="isapprox, 浮動小数点数>比較">
+<h2 data-index="isapprox, 浮動小数点数>比較" class="anchored" data-anchor-id="sec-isapprox">正しい比較：<code>==</code> ではなく <code>isapprox</code>（<code>≈</code>）</h2>
+<p>浮動小数点数には必ず丸め誤差がつきまとう． だから小数を <code>==</code> で「ぴったり等しいか」調べるのは，ほとんどの場合 <strong>やってはいけない</strong>． 代わりに，<strong>十分近いか</strong>を調べる <code>isapprox</code>（演算子 <code>≈</code>，<code>\approx</code>+TABで入力）を使う．</p>
+<div id="16" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span> <span class="op">==</span> <span class="fl">0.3</span>     <span class="co"># exact equality</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>false</code></pre>
+</div>
+</div>
+<div id="18" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span> <span class="op">≈</span> <span class="fl">0.3</span>      <span class="co"># close enough? (isapprox)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p><code>≈</code> は <code>isapprox</code> の演算子版で，次の関数呼び出しと同じである．</p>
+<div id="20" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">isapprox</span>(<span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>true</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ヒント
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>小数の比較は <code>==</code> ではなく <code>≈</code>（<code>isapprox</code>）</strong>． これが今回いちばん持ち帰ってほしい実務上の習慣である． ただし <strong><code>0</code> との比較に <code>≈</code> は使えない</strong>（<code>isapprox(1e-20, 0.0)</code> は <code>false</code> になる）． <code>0</code> に近いかを見るときは，<code>abs(x) &lt; 1e-10</code> のように <strong>差の大きさ</strong> で判定する． <a href="./ch06.html">第6回</a>で <code>0.1 + 0.2 == 0.3</code> が <code>false</code> になった理由は「有限の有効数字」であり， 正しい比較の仕方が <code>≈</code> だった，というところまで繋がった．</p>
+</div>
+</div>
+</section>
+<section id="sec-naninf" class="level2" data-index="NaN, Inf, 浮動小数点数>特殊値">
+<h2 data-index="NaN, Inf, 浮動小数点数>特殊値" class="anchored" data-anchor-id="sec-naninf">NaN と Inf：数でない結果</h2>
+<p>浮動小数点数には，ふつうの数のほかに特別な値がある． <code>Inf</code>（無限大）と <code>NaN</code>（Not a Number，数でない）である． たとえば「正の数 ÷ 0」は <code>Inf</code> になる．</p>
+<div id="22" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1.0</span> <span class="op">/</span> <span class="fl">0.0</span>            <span class="co"># what comes out of a division by zero?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>Inf</code></pre>
+</div>
+</div>
+<p><code>Inf - Inf</code> のように <strong>答えが定まらない</strong>計算をすると <code>NaN</code> になる．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>Inf - Inf</code> は <code>0</code> だろうか？　また，もし結果が <code>NaN</code> だとして，<code>NaN == NaN</code> は <code>true</code> か？</p>
+</div>
+</div>
+<div id="24" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cn">Inf</span> <span class="op">-</span> <span class="cn">Inf</span>            <span class="co"># what comes out of infinity minus infinity?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>NaN</code></pre>
+</div>
+</div>
+<div id="26" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cn">NaN</span> <span class="op">==</span> <span class="cn">NaN</span>           <span class="co"># is NaN equal to itself?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>false</code></pre>
+</div>
+</div>
+<p><code>NaN</code> は「数でない」ので，<strong>自分自身とすら等しくない</strong>よう定められている． そのため <code>x == x</code> が <code>false</code> になったら，その <code>x</code> は <code>NaN</code> だと分かる． <code>NaN</code> かどうかを正しく調べるには専用の関数 <code>isnan</code> を使う．</p>
+<div id="28" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">isnan</span>(<span class="cn">Inf</span> <span class="op">-</span> <span class="cn">Inf</span>)     <span class="co"># use this to test for NaN</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>true</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>補足：NaN は伝播する
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>NaN</code> を含む計算は，たいてい結果も <code>NaN</code> になって広がっていく（<strong>伝播</strong>）． 計算の途中で <code>NaN</code> が紛れ込むと，最後の答えまで <code>NaN</code> に汚染されることがある．</p>
+</div>
+</div>
+</section>
+<section id="sec-removable" class="level2" data-index="有理式, 除去可能特異点, NaN>グラフ">
+<h2 data-index="有理式, 除去可能特異点, NaN>グラフ" class="anchored" data-anchor-id="sec-removable">発展：グラフに穴があく</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ノート
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ここから先は <strong>発展（必修ではない）</strong>． <code>NaN</code> が figure にどう現れるかを見たい人向けである．</p>
+</div>
+</div>
+<p>次の有理式を考える．</p>
+<p><span class="math display">\[
+y = \frac{x^3+8}{x^3+3x^2-4x-12}
+\]</span></p>
+<p>分母は <span class="math inline">\(x = -3,\; -2,\; 2\)</span> で <span class="math inline">\(0\)</span> になる．だから，この3点で不連続に <strong>なりうる</strong>．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(x = -2\)</span> の近くで，グラフはどうなっているだろうか． ほかの2点（<span class="math inline">\(x = -3\)</span> と <span class="math inline">\(x = 2\)</span>）と同じように見えるだろうか．</p>
+</div>
+</div>
+<div id="30" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="op">-</span><span class="fl">4</span><span class="op">:</span><span class="fl">0.01</span><span class="op">:</span><span class="fl">4</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> xs<span class="op">.^</span><span class="fl">3</span> <span class="op">.+</span> <span class="fl">8</span>                        <span class="co"># numerator</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>qs <span class="op">=</span> xs<span class="op">.^</span><span class="fl">3</span> <span class="op">.+</span> <span class="fl">3</span>xs<span class="op">.^</span><span class="fl">2</span> <span class="op">.-</span> <span class="fl">4</span>xs <span class="op">.-</span> <span class="fl">12</span>      <span class="co"># denominator</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> ps <span class="op">./</span> qs</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xs, ys, ylims<span class="op">=</span>(<span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span>))</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<img src="data:image/png;base64,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">
+</div>
+</div>
+<p><span class="math inline">\(x = -3\)</span> と <span class="math inline">\(x = 2\)</span> では値が大きく振れるが，<strong><span class="math inline">\(x = -2\)</span> では何も起きていない</strong>ように見える． 実際，その1点だけ値が <code>NaN</code> になっている．</p>
+<div id="32" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>[ps[<span class="fu">findfirst</span>(<span class="op">==</span>(<span class="op">-</span><span class="fl">2.0</span>), xs)], qs[<span class="fu">findfirst</span>(<span class="op">==</span>(<span class="op">-</span><span class="fl">2.0</span>), xs)], ys[<span class="fu">findfirst</span>(<span class="op">==</span>(<span class="op">-</span><span class="fl">2.0</span>), xs)]]</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>3-element Vector{Float64}:
+   0.0
+   0.0
+ NaN</code></pre>
+</div>
+</div>
+<p>分子も <span class="math inline">\(x = -2\)</span> で <span class="math inline">\(0\)</span> になるので，計算は <code>0/0</code> になり <strong><code>NaN</code></strong> が返る． <code>plot</code> は <code>NaN</code> の点を飛ばして描くので，そこに <strong>穴があく</strong>（線が途切れる）．</p>
+<p>分子と分母は，どちらも <span class="math inline">\((x+2)\)</span> で割り切れる．</p>
+<p><span class="math display">\[
+\frac{x^3+8}{x^3+3x^2-4x-12} = \frac{x^2-2x+4}{(x+3)(x-2)}
+\]</span></p>
+<p>約分した式で描き，もとのグラフと重ねてみる．</p>
+<div id="34" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>zs <span class="op">=</span> (xs<span class="op">.^</span><span class="fl">2</span> <span class="op">.-</span> <span class="fl">2</span>xs <span class="op">.+</span> <span class="fl">4</span>) <span class="op">./</span> ((xs <span class="op">.+</span> <span class="fl">3</span>) <span class="op">.*</span> (xs <span class="op">.-</span> <span class="fl">2</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xs, ys, ylims<span class="op">=</span>(<span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span>), label<span class="op">=</span><span class="st">"original"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(xs, zs, label<span class="op">=</span><span class="st">"reduced"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<img src="data:image/png;base64,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TJo0KSoqqtf+Ks5E4YAkSZKx5YQpbbroFABCkUqtVvhC/fL0nvqqtjXviE4hafsPU13eyQmNiouLJ02aJEmS1WpduXLlD3/4w7Vr10qSVFhY+Omnny5evHjlypUPPvigWq2WJOnuu+/euHHjObaydOnS++67r/06LAaDwWAw7Nix4+TJk/Hx8WvWrJEkadiwYWvXrp0/f/7KlSs3bNggSZLRaLztttveeUfkXxGFA5IkSUnW6oRsllQAdEKtUam8oV44VBn9En/8v6JTnNWpi7fV19fL5fJNmzadOmH53LlzJUlqamo6dZ22s50Y1Ofztd9oaGhITDztuld1dXUKhaK9bUiSFB0dXVhY6PV629ra2i8qe46X7TUUDkhNzRaVz52S2Pk1CQFEOI1Gowz5whHiTtWLzMxMrVZ7/fXXDxs27LtP6Nev3759+yZPnixJ0p49e059VXR0dFNTU/up0A8fPjx+/HhJkgYPHrxt27bvfe97p7580KBBVqv1Zz/7WYery+bk5OzduzclJeW7LysKhQPS8eOVbYb0ged/IoBIpFGrVb5Q34ejr1AqlU888cSCBQt++ctfpqenHzhwwO/333777ffee+/NN9+cmpqqUqmeffbZU8+fOnXqI488cvvtt69cubKioqL9wUceeWTy5MkJCQmjR48uKSkZPXp0UVHRjTfeOHfu3J/97GdGo3Hnzp35+flz5sy577777rvvvueff76mpmbJkiXZ2dmCvm9JonBAkqTG6hqnKU10CgAhSqPTqJlw9ED76sapu/fff39BQcGyZcsaGxvz8/Pbrxx7+eWXv/766//6178MBsPrr7++cuXK9if/7W9/e/rpp1955ZWrrrpqzJgxWVlZ7S+4cePGV155ZePGjf369bvyyislSXr55ZeXLFny/vvv22y2wYMHDx8+XJKku+++22Qy/f3vf8/MzFyyZInYIQeFA5KtrlqKo3AA6JxGrdL4KRzdN2LEiBEjRnz3kenTp0+f3nE//RkzZrRf91WSpJEjR7bfiIuL+/3vf3/maw4cOPDUtdzayWSyG2644YYbbujwzFtuueWWW25pv92+IiMK5+GAJGuq0SSmik4BIERpNWp1yB+lgtBH4YCkb62OS2fCAaBzWo1KLvl8Pr/oIOjbKByQEm216RlMOACclUumsjsYcqBHKByRzmKx67y21GTB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">
+</div>
+</div>
+<p>2本は <span class="math inline">\(x = -2\)</span> を除いて <strong>完全に重なる</strong>． 約分した式は <span class="math inline">\(x = -2\)</span> でも値をもつ（<span class="math inline">\((4+4+4)/((1)(-4)) = -3\)</span>）．</p>
+<div id="36" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>zs[<span class="fu">findfirst</span>(<span class="op">==</span>(<span class="op">-</span><span class="fl">2.0</span>), xs)]            <span class="co"># the reduced form has a value here</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>-3.0</code></pre>
+</div>
+</div>
+<p>数学では <span class="math inline">\(x = -2\)</span> は <strong>除去可能な特異点</strong> で，極限は <span class="math inline">\(-3\)</span> である． しかし計算機は <code>0/0</code> を <code>NaN</code> としか答えない． <strong>数学的に等しい式でも，書き方によって計算できたりできなかったりする</strong>（約分の前と後では，<span class="math inline">\(x=-2\)</span> での定義のしかたが違う）．</p>
+</section>
+<section id="sec-summary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-summary">今回のまとめ</h2>
+<ul>
+<li><strong>浮動小数点は有限の有効数字</strong>（<code>Float64</code> は約10進15〜16桁）．表せない数は <strong>丸められる</strong>（<code>0.1</code> がそうだった）．</li>
+<li><strong>情報落ち</strong>：桁違いの数を足すと小さい方が消える（<code>1e16 + 1 == 1e16</code> が <code>true</code>）．</li>
+<li><strong>桁落ち</strong>：近い数を引くと有効数字が消える（<code>(1e16 + 1) - 1e16</code> が <code>0.0</code>）．</li>
+<li><strong>数値微分の U字</strong>：<code>h</code> を小さくしすぎると桁落ちで悪化．理論と実測の食い違いは <strong>厳密値との差</strong>で暴く（L3）．</li>
+<li>小数の比較は <code>==</code> ではなく <strong><code>≈</code>（<code>isapprox</code>）</strong>．<a href="./ch06.html">第6回</a>の <code>0.1 + 0.2 == 0.3</code> はこれで説明がつく．</li>
+<li><strong><code>NaN</code> は自分自身とも等しくない</strong>（<code>NaN == NaN</code> は <code>false</code>，判定は <code>isnan</code>）．<code>Inf - Inf</code> は <code>NaN</code>．</li>
+<li>整数（<a href="./ch09.html">第9回</a>）も小数（第10回）も <strong>有限のビットの世界</strong>．<strong>計算機の数 ≠ 数学の数</strong>．</li>
+</ul>
+<!-- doc-links: generated by build-doc-links.py -- do not edit by hand -->
+<section id="この回で使った関数" class="level3">
+<h3 class="anchored" data-anchor-id="この回で使った関数">この回で使った関数</h3>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.abs"><code>abs</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.abs">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/numbers/#Base.big"><code>big</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/numbers.html#Base.big">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.cos-Tuple%7BNumber%7D"><code>cos</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.cos-Tuple%7BNumber%7D">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/arrays/#Base.findfirst-Tuple%7BAny%7D"><code>findfirst</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/arrays.html#Base.findfirst-Tuple%7BAny%7D">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.isapprox"><code>isapprox</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.isapprox">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/numbers/#Base.isnan"><code>isnan</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/numbers.html#Base.isnan">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/io-network/#Base.println"><code>println</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/io-network.html#Base.println">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.sin-Tuple%7BNumber%7D"><code>sin</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.sin-Tuple%7BNumber%7D">日本語訳</a>）</li>
+<li><code>plot</code>／<code>plot!</code> … <a href="https://docs.juliaplots.org/stable/basics/">Plots.jl のドキュメント</a>（日本語訳なし）</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>練習
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><code>0.1 + 0.2 == 0.3</code> が <code>false</code> になる理由を，「有限の有効数字」「丸め」という言葉を使って一文で説明せよ．</li>
+<li><code>(1e16 + 1) - 1e16</code> が <code>0.0</code> になる理由を，「情報落ち」「桁落ち」を区別して説明せよ．</li>
+<li><code>f(x) = sin(x)</code> の <code>x = 1</code> での数値微分を，いくつかの <code>h</code> で計算せよ．厳密値は <code>cos(1)</code> である．誤差が U字になる <code>h</code> の範囲を探し，最良の <code>h</code> を報告せよ．</li>
+<li>ふたつの小数 <code>a</code>，<code>b</code> が「十分近いか」を <code>==</code> で調べてしまっている誤ったコードを想定し，正しく直せ（直し方は一つではない）．</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-discuss" class="level2">
+<h2 class="anchored" data-anchor-id="sec-discuss">みんなで考えよう</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>答えは配りません
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>近くの人と話し合う．</p>
+</div>
+</div>
+<p><code>1.0</code>，<code>1e16</code>，<code>-1e16</code> の3つを足す．</p>
+<ol type="1">
+<li>足す順番によって結果が変わるのはなぜか．</li>
+<li>大きさがばらばらの数をたくさん足すとき，どんな順番で足せば安全か．いつでも使える決まりはあるか．</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "コピーしました");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "コピーしました");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ch09.html" class="pagination-link" aria-label="第9回：整数・剰余と互除法">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">第9回：整数・剰余と互除法</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ch11.html" class="pagination-link" aria-label="第11回：復習">
+        <span class="nav-page-text">第11回：復習</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

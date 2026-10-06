@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>はじめに – プログラミング演習（2026）</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ch01.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d3f3448f837ff03356db176d8adb603.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">はじめに</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">プログラミング演習（2026）</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">はじめに</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第1回：変数・代入・再代入</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第2回：ベクトルと基本プロット</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第3回：for文・総和・パラメータ作図</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第4回：対数グラフで直線化・数式モード</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第5回：平面図形の変形</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第6回：条件分岐とはさみうち</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第7回：関数定義の初歩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第8回：配列の生成・要素代入と篩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第9回：整数・剰余と互除法</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第10回：浮動小数点と数値誤差</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第11回：復習</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第12回：反復の設計と数値積分</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第13回：関数の作り込み</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第14回：行列と回転行列</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第15回：複素数とガウス平面</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">さらに学ぶために</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-how" id="toc-sec-how" class="nav-link active" data-scroll-target="#sec-how">この教材の学び方</a></li>
+  <li><a href="#sec-julia" id="toc-sec-julia" class="nav-link" data-scroll-target="#sec-julia">Julia言語について</a>
+  <ul class="collapse">
+  <li><a href="#sec-version" id="toc-sec-version" class="nav-link" data-scroll-target="#sec-version">バージョン</a></li>
+  <li><a href="#sec-search" id="toc-sec-search" class="nav-link" data-scroll-target="#sec-search">調べ方</a></li>
+  </ul></li>
+  <li><a href="#sec-env" id="toc-sec-env" class="nav-link" data-scroll-target="#sec-env">動作環境</a></li>
+  <li><a href="#sec-contents" id="toc-sec-contents" class="nav-link" data-scroll-target="#sec-contents">各回の内容</a>
+  <ul class="collapse">
+  <li><a href="#第i部-命令型の素地" id="toc-第i部-命令型の素地" class="nav-link" data-scroll-target="#第i部-命令型の素地">第I部　命令型の素地</a></li>
+  <li><a href="#第ii部-数理題材と概念の拡張" id="toc-第ii部-数理題材と概念の拡張" class="nav-link" data-scroll-target="#第ii部-数理題材と概念の拡張">第II部　数理題材と概念の拡張</a></li>
+  <li><a href="#第iii部-数値配列操作抽象化" id="toc-第iii部-数値配列操作抽象化" class="nav-link" data-scroll-target="#第iii部-数値配列操作抽象化">第III部　数値・配列操作・抽象化</a></li>
+  </ul></li>
+  <li><a href="#sec-license" id="toc-sec-license" class="nav-link" data-scroll-target="#sec-license">免責事項とライセンス</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">はじめに</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>大学1年次向け <strong>プログラミング演習</strong> の教材である（2026年度版）． 言語は <strong>Julia 1.12</strong>，作図は <strong>Plots.jl（GRバックエンド）</strong> を使う．</p>
+<p>題材は，大学初年級の数学と工学に現れる計算から選んである． プログラミングを「道具」として，数式やアルゴリズムが計算機の上でどう振る舞うかを確かめていく．</p>
+<section id="sec-how" class="level2">
+<h2 class="anchored" data-anchor-id="sec-how">この教材の学び方</h2>
+<p><strong>実行する前に，結果を予測する．</strong> 各回には「予測しよう」という印が何度も現れる． そこでは，セルを動かす前に答えを書き出す．そのうえで実行し，予測と照らし合わせる． 予測が外れたときが，いちばん学べる瞬間である．</p>
+<p>照合の基準は，回が進むにつれて強くなる．</p>
+<ul>
+<li><strong>L1</strong>：自分の手計算と照らし合わせる（第1回から）</li>
+<li><strong>L2</strong>：既知の公式，厳密解，特殊値と照らし合わせる（第3回から）</li>
+<li><strong>L3</strong>：もっともらしく見える結果を，独立した基準（不変量，誤差の減り方，理論との食い違い）で検証する（第10回から）</li>
+</ul>
+<p>生成AIは数秒でコードを書く．だから，<strong>書く力と同じだけ，確かめる力が要る</strong>． この教材が全体として目指すのは，その確かめ方である．</p>
+<p><strong>落とし穴</strong>．各回に，結果が直感に反する例を置いてある． どれも，その回までに学んだ概念だけで理由を説明できる． 予想が外れたときこそ，何が起きているかを確かめる機会である．</p>
+<p><strong>みんなで考えよう</strong>．各回の最後に，答えを配らない問題がある． 近くの人と話し合い，考えたことを書き留める． その場で解ききれなくてよい．後の回で学ぶ道具が，解き方になることもある．</p>
+</section>
+<section id="sec-julia" class="level2">
+<h2 class="anchored" data-anchor-id="sec-julia">Julia言語について</h2>
+<p>この教材は <strong>Julia</strong> を使う． Julia は，<strong>書きやすさと実行の速さの両立</strong>を目指して作られた言語である． どんな目的にも使える汎用の言語だが，<strong>数値計算の扱いにとくに優れている</strong>．</p>
+<p>数式に近い形で書けるので，紙の上の式と，計算機に書いた式を見比べやすい． この教材が「数式が計算機の上でどう振る舞うか」を主題にできるのは，そのためである．</p>
+<p>プログラミングの演習が，言語の習得に留まらず， 数学・技術・工学の理解の助けになることを願っている．</p>
+<section id="sec-version" class="level3">
+<h3 class="anchored" data-anchor-id="sec-version">バージョン</h3>
+<p>Julia の 1.0 版は2018年8月に公開された． 以降は <strong>上位互換性が保たれている</strong>ので，この教材のコードは後のバージョンでも動く見込みである． 新しい版のほうが速いことも多いので，自分のPCに入れるなら新しいものを選んでよい．</p>
+</section>
+<section id="sec-search" class="level3">
+<h3 class="anchored" data-anchor-id="sec-search">調べ方</h3>
+<p><strong>検索するときは <code>Julialang</code> という語を使う．</strong> <code>Julia</code> の1語で検索すると，人の名前として使われることが多いため，目的の情報にたどり着きにくい．</p>
+<p>公式のドキュメントには，日本語訳がある．</p>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/">Julia Documentation</a>（本家．英語）</li>
+<li><a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/index.html">Julia 1.12 Documentation 非公式日本語訳</a> （この教材が使う Julia 1.12 に対応している）</li>
+</ul>
+<p>各回の「今回のまとめ」には，その回で使った関数へのリンクを並べてある． 分からない関数が出てきたら，まずそこから引くとよい．</p>
+</section>
+</section>
+<section id="sec-env" class="level2">
+<h2 class="anchored" data-anchor-id="sec-env">動作環境</h2>
+<ul>
+<li>Julia 1.12 以上</li>
+<li><code>Plots</code>（GRバックエンド）．第9回のみ <code>SpecialFunctions</code> も使う</li>
+<li>notebook の先頭セルが，足りないパッケージをその場で導入する</li>
+</ul>
+<p>もっと知りたくなったときの入口は <a href="./references.html">さらに学ぶために</a> にまとめてある．</p>
+</section>
+<section id="sec-contents" class="level2">
+<h2 class="anchored" data-anchor-id="sec-contents">各回の内容</h2>
+<section id="第i部-命令型の素地" class="level3">
+<h3 class="anchored" data-anchor-id="第i部-命令型の素地">第I部　命令型の素地</h3>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="./ch01.html">第1回</a></td>
+<td>変数・代入・再代入．変数は「箱」ではなく「名札」</td>
+</tr>
+<tr class="even">
+<td><a href="./ch02.html">第2回</a></td>
+<td>ベクトルと基本プロット．全部を変換するならブロードキャスト，一部を選ぶなら添字</td>
+</tr>
+<tr class="odd">
+<td><a href="./ch03.html">第3回</a></td>
+<td>for文と総和．パラメータを変えて曲線を重ねる</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="第ii部-数理題材と概念の拡張" class="level3">
+<h3 class="anchored" data-anchor-id="第ii部-数理題材と概念の拡張">第II部　数理題材と概念の拡張</h3>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="./ch04.html">第4回</a></td>
+<td>対数グラフで直線化する．べき乗則は両対数，指数則は片対数で直線になる</td>
+</tr>
+<tr class="even">
+<td><a href="./ch05.html">第5回</a></td>
+<td>平面図形の変形．平行移動，伸縮，回転</td>
+</tr>
+<tr class="odd">
+<td><a href="./ch06.html">第6回</a></td>
+<td>条件分岐．はさみうち法を手で回してみる</td>
+</tr>
+<tr class="even">
+<td><a href="./ch07.html">第7回</a></td>
+<td>関数定義の初歩．はさみうちの1ステップを関数にする</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="第iii部-数値配列操作抽象化" class="level3">
+<h3 class="anchored" data-anchor-id="第iii部-数値配列操作抽象化">第III部　数値・配列操作・抽象化</h3>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="./ch08.html">第8回</a></td>
+<td>配列の生成と要素代入．エラトステネスの篩</td>
+</tr>
+<tr class="even">
+<td><a href="./ch09.html">第9回</a></td>
+<td>整数は有限のビット世界．剰余演算とユークリッド互除法</td>
+</tr>
+<tr class="odd">
+<td><a href="./ch10.html">第10回</a></td>
+<td>浮動小数点は有限の有効数字．桁落ちと情報落ち</td>
+</tr>
+<tr class="even">
+<td><a href="./ch11.html">第11回</a></td>
+<td>復習．落とし穴の理由を，自分のことばで言う</td>
+</tr>
+<tr class="odd">
+<td><a href="./ch12.html">第12回</a></td>
+<td>反復の設計．収束の打ち切りと数値積分</td>
+</tr>
+<tr class="even">
+<td><a href="./ch13.html">第13回</a></td>
+<td>関数の作り込み．既定値，複数戻り値，高階関数</td>
+</tr>
+<tr class="odd">
+<td><a href="./ch14.html">第14回</a></td>
+<td>行列と回転行列</td>
+</tr>
+<tr class="even">
+<td><a href="./ch15.html">第15回</a></td>
+<td>複素数とガウス平面．回転の3つの表し方が一致する</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="sec-license" class="level2">
+<h2 class="anchored" data-anchor-id="sec-license">免責事項とライセンス</h2>
+<p>この教材は <strong>不定期に更新する</strong>．節の配置も変える可能性がある．</p>
+<p>内容は著者の知見に基づいて公開するものである． <strong>書かれた内容およびその正誤によって生じた結果について，著者はいかなる責任も負わない．</strong></p>
+<p>掲載したコードは，次の環境で動作を確認している． <strong>どの環境でも同じ結果になることを保証するものではない．</strong></p>
+<ul>
+<li>macOS 26.6.2</li>
+<li>Julia 1.12.6（<a href="https://julialang.org/downloads/">Julia公式ページ</a>から配布されたもの）</li>
+<li><code>Plots</code>（GRバックエンド）</li>
+</ul>
+<p>Copyright (c) 2018–2026 Hiroharu Sugawara</p>
+<p>この教材は <strong>MIT License</strong> で公開する．</p>
+<ul>
+<li>ライセンスの本文：<a href="LICENSE">LICENSE</a>（同じものが <a href="https://opensource.org/license/mit">opensource.org</a> にある）</li>
+<li>参考和訳：<a href="https://licenses.opensource.jp/MIT/MIT.html">MIT License（日本語訳）</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "コピーしました");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "コピーしました");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ch01.html" class="pagination-link" aria-label="第1回：変数・代入・再代入">
+        <span class="nav-page-text">第1回：変数・代入・再代入</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

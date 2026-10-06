@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>第9回：整数・剰余と互除法 – プログラミング演習（2026）</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ch10.html" rel="next">
+<link href="./ch08.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d3f3448f837ff03356db176d8adb603.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch09.html">第9回：整数・剰余と互除法</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">プログラミング演習（2026）</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">はじめに</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第1回：変数・代入・再代入</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第2回：ベクトルと基本プロット</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第3回：for文・総和・パラメータ作図</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第4回：対数グラフで直線化・数式モード</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第5回：平面図形の変形</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第6回：条件分岐とはさみうち</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第7回：関数定義の初歩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第8回：配列の生成・要素代入と篩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch09.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">第9回：整数・剰余と互除法</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第10回：浮動小数点と数値誤差</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第11回：復習</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第12回：反復の設計と数値積分</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第13回：関数の作り込み</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第14回：行列と回転行列</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第15回：複素数とガウス平面</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">さらに学ぶために</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-twos-complement" id="toc-sec-twos-complement" class="nav-link active" data-scroll-target="#sec-twos-complement">整数は有限のビット世界（2の補数）</a></li>
+  <li><a href="#sec-overflow" id="toc-sec-overflow" class="nav-link" data-scroll-target="#sec-overflow">オーバーフロー：有限だから一周する</a></li>
+  <li><a href="#sec-myfactorial" id="toc-sec-myfactorial" class="nav-link" data-scroll-target="#sec-myfactorial">発展：自作の階乗関数で型のしくみを見る</a>
+  <ul class="collapse">
+  <li><a href="#sec-myfactorial-gamma" id="toc-sec-myfactorial-gamma" class="nav-link" data-scroll-target="#sec-myfactorial-gamma">落とし穴：<code>myfactorial(3.2)</code> は何を計算しているか</a></li>
+  </ul></li>
+  <li><a href="#sec-div-rem" id="toc-sec-div-rem" class="nav-link" data-scroll-target="#sec-div-rem">整数の除算・剰余</a></li>
+  <li><a href="#sec-euclid" id="toc-sec-euclid" class="nav-link" data-scroll-target="#sec-euclid">ユークリッド互除法（最大公約数）</a>
+  <ul class="collapse">
+  <li><a href="#sec-while" id="toc-sec-while" class="nav-link" data-scroll-target="#sec-while">回数が決まらない繰り返し：<code>while</code></a></li>
+  </ul></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary">今回のまとめ</a>
+  <ul class="collapse">
+  <li><a href="#この回で使った関数" id="toc-この回で使った関数" class="nav-link" data-scroll-target="#この回で使った関数">この回で使った関数</a></li>
+  </ul></li>
+  <li><a href="#sec-discuss" id="toc-sec-discuss" class="nav-link" data-scroll-target="#sec-discuss">みんなで考えよう</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">第9回：整数・剰余と互除法</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>今回の背骨は <strong>「整数は有限のビット世界，すなわち2の補数．だから溢れて一周する」</strong> である． コンピュータの整数は，数学の整数（いくらでも大きくできる）とは違い， <strong>決まったビット数の中</strong>に収められている．<code>Int8</code>（8ビット）で <strong>溢れ（オーバーフロー）</strong> を 目で見て，<code>bitstring</code> で <strong>2の補数</strong> のしくみをのぞく． あわせて，整数の <strong>除算・剰余</strong>（<code>div</code>・<code>rem</code>・<code>mod</code>）と， それらを使う <strong>ユークリッド互除法</strong> を関数として書く．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ノート
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>整数（第9回）＝有限で溢れる</strong>，<strong>浮動小数点（<a href="./ch10.html">第10回</a>）＝丸めでズレる</strong>． この2回は対になっていて，あわせて <strong>「計算機の数 ≠ 数学の数」</strong> を学ぶ． 今回は前半（整数）を扱う．</p>
+</div>
+</div>
+<section id="sec-twos-complement" class="level2" data-index="整数, 2の補数, ビット, Int8">
+<h2 data-index="整数, 2の補数, ビット, Int8" class="anchored" data-anchor-id="sec-twos-complement">整数は有限のビット世界（2の補数）</h2>
+<p>ふだん使う整数の型 <code>Int64</code> は64ビットだが，溢れを <strong>見える化</strong> するために， ここではわざと小さな <code>Int8</code>（<strong>8ビット</strong>）を使う． 8ビットで表せる整数は <strong>−128 から 127 まで</strong> の256個だけである．</p>
+<p>その範囲の両端は <code>typemax</code>（最大値）・<code>typemin</code>（最小値）で確かめられる．</p>
+<div id="4" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typemax</span>(<span class="dt">Int8</span>), <span class="fu">typemin</span>(<span class="dt">Int8</span>)    <span class="co"># the two ends of the range</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>(127, -128)</code></pre>
+</div>
+</div>
+<p><code>bitstring</code> を使うと，その整数が <strong>どんなビットの並び（0と1）</strong> で表されているかが見える．</p>
+<div id="6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bitstring</span>(<span class="fu">Int8</span>(<span class="fl">127</span>))            <span class="co"># how is 127 stored?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>"01111111"</code></pre>
+</div>
+</div>
+<p>先頭が <code>0</code> で，残りの7ビットが <code>1111111</code> になっている． この <strong>先頭のビット（最上位ビット，MSB）が符号を表す</strong>：<code>0</code> なら正である．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>bitstring(Int8(-1))</code> はどんな並びになるか？ 「<code>-1</code> だから先頭が <code>1</code> で残りが…」と素直に考えると外れる．<strong>実行前に</strong>予想しよう．</p>
+</div>
+</div>
+<div id="8" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bitstring</span>(<span class="fu">Int8</span>(<span class="op">-</span><span class="fl">1</span>))             <span class="co"># compare with your prediction</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>"11111111"</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>2の補数（負の数の表し方）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>全部1のビット並びが <code>-1</code></strong> になるのが <strong>2の補数</strong> という方式である． 直感に反するが，これには大きな利点がある： <strong><code>x</code> のビット並びに <code>1</code> を足していくと，<code>127</code> の次が <code>-128</code> へ自然につながり， 1本の輪（リング）になる</strong>．だから「足し算回路」だけで負の数も正しく扱える． 深入りはしないが，<strong>「整数は有限の輪っかになっている」</strong> とだけ覚えておこう．</p>
+</div>
+</div>
+</section>
+<section id="sec-overflow" class="level2" data-index="オーバーフロー, 整数>溢れ, factorial">
+<h2 data-index="オーバーフロー, 整数>溢れ, factorial" class="anchored" data-anchor-id="sec-overflow">オーバーフロー：有限だから一周する</h2>
+<p>整数が有限の輪なら，<strong>最大値の次に1を足すとどうなるか</strong>．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>Int8(127) + Int8(1)</code> はいくつか？ 数学なら <code>128</code> だが，<code>Int8</code> の最大は <code>127</code> である．<strong>実行前に</strong>予想しよう．</p>
+</div>
+</div>
+<div id="10" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Int8</span>(<span class="fl">127</span>) <span class="op">+</span> <span class="fu">Int8</span>(<span class="fl">1</span>)             <span class="co"># what does the sum become?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>-128</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：整数オーバーフロー
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>Int8</code> の最大値 <code>127</code> に <code>1</code> を足すと，<code>128</code> ではなく <strong><code>-128</code>（最小値）</strong> になる． エラーも警告も出ず，<strong>静かに間違った値</strong>を返すのがこわいところである． これが <strong>オーバーフロー（溢れて一周）</strong> ＝2の補数の輪が一周した瞬間である．</p>
+</div>
+</div>
+<div id="12" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Int8</span>(<span class="fl">100</span>) <span class="op">+</span> <span class="fu">Int8</span>(<span class="fl">100</span>)           <span class="co"># 200 is out of range; what comes out?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>-56</code></pre>
+</div>
+</div>
+<p>同じことは，ふだんの <code>Int64</code>（64ビット，範囲は約 ±9.2×10¹⁸）でも起こる． 重要なのは，<strong>整数どうしの加減乗算（<code>+</code>・<code>-</code>・<code>*</code>）は，溢れても警告もエラーも出さず， 静かに一周する</strong>ということである．だから気づきにくい．</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：<code>Int64</code> の加算も静かに溢れる
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>Int64</code> の最大値 <code>typemax(Int64)</code> に <code>1</code> を足すと，<code>Int8</code> と同じく <strong>最小値（負）</strong> にぐるっと一周する．<strong>エラーは出ない</strong>．</p>
+</div>
+</div>
+<div id="14" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typemax</span>(<span class="dt">Int64</span>) <span class="op">+</span> <span class="fl">1</span>              <span class="co"># what happens at the top end?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>-9223372036854775808</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-myfactorial" class="level2" data-index="階乗, 関数定義, 多重ディスパッチ, ガンマ関数">
+<h2 data-index="階乗, 関数定義, 多重ディスパッチ, ガンマ関数" class="anchored" data-anchor-id="sec-myfactorial">発展：自作の階乗関数で型のしくみを見る</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ノート
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ここから先は <strong>発展（必修ではない）</strong>．「同じコードが型によって結果を変える」しくみに 興味がある人向けである．読み飛ばして，次の <strong>「整数の除算・剰余」</strong> へ進んでよい．</p>
+</div>
+</div>
+<p>階乗 <code>n! = 1·2·⋯·n</code> は急速に大きくなる．自分で <strong><code>myfactorial</code></strong> を定義してみよう （for と総和＝<a href="./ch03.html">第3回</a>，関数定義＝<a href="./ch07.html">第7回</a>）．</p>
+<div id="16" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">myfactorial</span>(n)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">one</span>(n)                  <span class="co"># "1" of the same type as n (the key trick)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>n</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> p <span class="op">*</span> k</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>myfactorial (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>同じ関数を，<strong>引数の型を変えて</strong>呼ぶ．</p>
+<div id="18" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">myfactorial</span>(<span class="fl">5</span>)                  <span class="co"># check against 5! by hand</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>120</code></pre>
+</div>
+</div>
+<div id="20" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">myfactorial</span>(<span class="fl">21</span>)                 <span class="co"># does 21! fit in Int64?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>-4249290049419214848</code></pre>
+</div>
+</div>
+<div id="22" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">myfactorial</span>(<span class="fl">21.0</span>)               <span class="co"># Float -&gt; no overflow but approximate</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>5.109094217170944e19</code></pre>
+</div>
+</div>
+<div id="24" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">myfactorial</span>(<span class="fu">big</span>(<span class="fl">21</span>))            <span class="co"># BigInt -&gt; grows in digits and stays exact</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>51090942171709440000</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>同じコードが型ごとに違う ＝ 多重ディスパッチ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Int は静かに溢れ，Float は溢れず近似，BigInt は正確</strong>．<code>myfactorial</code> は1つしか書いていないのに， 型に応じて <code>*</code> の中身が自動で選ばれる（<strong>多重ディスパッチ</strong>）からである．</li>
+<li>初期値を <code>1</code> でなく <strong><code>one(n)</code></strong> にするのが技巧．型に合った「1」になり，<code>myfactorial(0.0)</code> も整数 <code>1</code> でなく <code>1.0</code> と正しく返る（<code>1:0</code> も <code>1:0.0</code> も空なので，ループは回らず <code>one(n)</code> がそのまま答え）．</li>
+</ul>
+</div>
+</div>
+<section id="sec-myfactorial-gamma" class="level3" data-index="ガンマ関数, 検証, 落とし穴">
+<h3 data-index="ガンマ関数, 検証, 落とし穴" class="anchored" data-anchor-id="sec-myfactorial-gamma">落とし穴：<code>myfactorial(3.2)</code> は何を計算しているか</h3>
+<p><code>myfactorial</code> に <strong>小数</strong> を渡しても，エラーは出ず <strong>それらしい数</strong> が返る．だが正しいだろうか．</p>
+<div id="26" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">myfactorial</span>(<span class="fl">3.2</span>)                <span class="co"># what does the loop actually multiply?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>6.0</code></pre>
+</div>
+</div>
+<p><code>for k in 1:3.2</code> は <code>1.0, 2.0, 3.0</code> までしか回らず，<strong>小数部 <code>.2</code> を黙って捨てている</strong>． 本当の <code>3.2!</code> は <strong>ガンマ関数</strong> <span class="math inline">\(\Gamma\)</span> で <span class="math inline">\(n! = \Gamma(n+1)\)</span> と定義される（<code>SpecialFunctions.jl</code>）．照合しよう．</p>
+<div id="28" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SpecialFunctions</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gamma</span>(<span class="fl">3.2</span> <span class="op">+</span> <span class="fl">1</span>)                  <span class="co"># the gamma function at 4.2</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>7.756689535793179</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>「実行できた」≠「求めたものが得られた」
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>myfactorial</code> は，書いたとおりに <code>1 × 2 × 3</code> を計算して <strong>6.0</strong> を返している． コードが壊れているのではない．<strong><code>3.2!</code> を求めたつもりなら，得られたのは別の値</strong>である． 真の <code>3.2!</code> は約 <strong>7.76</strong> で，得られた <code>6.0</code> とは 1.7 以上も違う．</p>
+<p>エラーは出ないので，<strong>既知の真値（ここではガンマ関数）と照合して初めて気づく</strong>． これが検証の核心である（<a href="./ch10.html">第10回</a>からは，これを L3 として扱う）． <code>myfactorial</code> は <strong>整数向け</strong>，非整数の階乗は <strong>ガンマ関数</strong>，と心得る （整数では一致：<code>gamma(6) == myfactorial(5) == 120</code>）．</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-div-rem" class="level2" data-index="商, 剰余, div, rem, mod">
+<h2 data-index="商, 剰余, div, rem, mod" class="anchored" data-anchor-id="sec-div-rem">整数の除算・剰余</h2>
+<p><a href="./ch01.html">第1回</a>で <code>7 / 2</code> が <code>3.5</code>（小数）になることを見た． 整数の世界の <strong>割り算</strong>は，<strong>商と余り</strong>に分けて考える．</p>
+<ul>
+<li><code>div(a, b)</code>：<strong>整商</strong>（小数を切り捨てた商）．<a href="./ch03.html">第3回</a>で使った <code>a ÷ b</code> と同じもの</li>
+<li><code>rem(a, b)</code>：<strong>剰余</strong>（割り算の余り）</li>
+<li><code>mod(a, b)</code>：<strong>剰余</strong>（こちらも余り．負の数で <code>rem</code> と違う）</li>
+</ul>
+<div id="30" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">div</span>(<span class="fl">17</span>, <span class="fl">5</span>)                      <span class="co"># 3 (integer quotient: the 3 in 17 = 5*3 + 2)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>3</code></pre>
+</div>
+</div>
+<p>正の数どうしなら，<code>rem</code> と <code>mod</code> は同じ結果になる．</p>
+<div id="32" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rem</span>(<span class="fl">17</span>, <span class="fl">5</span>), <span class="fu">mod</span>(<span class="fl">17</span>, <span class="fl">5</span>)          <span class="co"># same or different?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>(2, 2)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>rem(-7, 3)</code> と <code>mod(-7, 3)</code> はそれぞれいくつか？ <strong>負の数</strong>を割ると，2つは違う値になる．<strong>実行前に</strong>予想しよう．</p>
+</div>
+</div>
+<div id="34" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rem</span>(<span class="op">-</span><span class="fl">7</span>, <span class="fl">3</span>), <span class="fu">mod</span>(<span class="op">-</span><span class="fl">7</span>, <span class="fl">3</span>)          <span class="co"># now compare the signs</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>(-1, 2)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴：<code>rem</code> と <code>mod</code> の符号が違う
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>負の数では <code>rem</code> と <code>mod</code> で <strong>符号の基準が違う</strong>．</p>
+<ul>
+<li><code>rem(-7, 3)</code> は <strong>割られる数 <code>-7</code> の符号</strong>に合わせて <code>-1</code>．</li>
+<li><code>mod(-7, 3)</code> は <strong>割る数 <code>3</code> の符号</strong>に合わせて <code>2</code>（つねに <code>0</code> 以上）．</li>
+</ul>
+<p>「余りはひとつ」と思い込むと間違える．<strong>どちらの符号がほしいか</strong>で使い分ける．</p>
+</div>
+</div>
+<p>整数どうしでも <code>/</code> を使うと，<strong>商と余り</strong>ではなく <strong>実数の割り算</strong>になり， 結果は <strong>小数（浮動小数点数）</strong> になる．<strong>型が変わる</strong>ことに注意する．</p>
+<div id="36" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fl">17</span> <span class="op">/</span> <span class="fl">5</span>                          <span class="co"># 3.4 (real division; a float, not an integer)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>3.4</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ヒント
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>div(17, 5)</code> は <code>3</code>（<code>Int</code>）で，<code>17 / 5</code> は <code>3.4</code>（<code>Float64</code>）． <strong>整数の割り算がほしいなら <code>div</code>，小数がほしいなら <code>/</code></strong>．用途で使い分ける．</p>
+</div>
+</div>
+</section>
+<section id="sec-euclid" class="level2" data-index="ユークリッド互除法, 最大公約数, gcd, 剰余">
+<h2 data-index="ユークリッド互除法, 最大公約数, gcd, 剰余" class="anchored" data-anchor-id="sec-euclid">ユークリッド互除法（最大公約数）</h2>
+<p>剰余 <code>rem</code> を使う代表的なアルゴリズムが <strong>ユークリッド互除法</strong> である． 2つの整数の <strong>最大公約数（gcd）</strong> を，次の事実だけで求める：</p>
+<blockquote class="blockquote">
+<p><strong><code>a</code> と <code>b</code> の最大公約数は，<code>b</code> と <code>rem(a, b)</code> の最大公約数に等しい</strong>．</p>
+</blockquote>
+<p>この置き換えを繰り返すと余りは小さくなっていき，やがて <code>0</code> になる． <strong>余りが <code>0</code> になったときの割る数</strong>が最大公約数である． なぜ必ず <code>0</code> に届くのかは，次の節で考える．</p>
+<p>これを <strong>関数</strong> にまとめる（<a href="./ch07.html">第7回</a>の関数化のモチーフの続き）．</p>
+<section id="sec-while" class="level3" data-index="while文, 繰り返し>回数が決まらない, 停止">
+<h3 data-index="while文, 繰り返し>回数が決まらない, 停止" class="anchored" data-anchor-id="sec-while">回数が決まらない繰り返し：<code>while</code></h3>
+<p><a href="./ch03.html">第3回</a>の <code>for</code> は，走査する値を <strong>先に</strong> 用意しておく形だった． 互除法は <strong>何回で終わるかが，やってみるまで分からない</strong>． こういう繰り返しには <strong><code>while 条件 … end</code></strong> を使う．条件が成り立つ <strong>間</strong>，中身を繰り返す．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>下の <code>mygcd</code> の <code>while b != 0</code> は，<strong>必ず止まる</strong>だろうか． 止まると言えるなら，その理由は何か．</p>
+</div>
+</div>
+<p>止まる理由は，余りの性質にある． <code>rem(a, b)</code> は <strong><code>b</code> より小さい 0 以上の整数</strong> である． だから <code>b</code> は繰り返すたびに小さくなり，0 以上なので，有限回で必ず <code>0</code> に届く． <strong>「止まる理由を言えること」が，<code>while</code> を書くときの作法</strong>である （止まらない例は<a href="./ch12.html">第12回</a>で扱う）．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>同時に置き換える
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>a</code> を <code>b</code> に，<code>b</code> を余りに <strong>同時に</strong> 置き換えたい． <a href="./ch05.html">第5回</a>の <strong>同時代入</strong> を使えば1行で書ける． 右辺が先に計算されるので，<code>rem(a, b)</code> には <strong>置き換える前の</strong> <code>a</code> と <code>b</code> が使われる．</p>
+</div>
+</div>
+<div id="38" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mygcd</span>(a, b)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> b <span class="op">!=</span> <span class="fl">0</span>              <span class="co"># repeat until the remainder becomes 0</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>        a, b <span class="op">=</span> b, <span class="fu">rem</span>(a, b)   <span class="co"># update both at once (right-hand side is read first)</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a              <span class="co"># when b is 0, a is the greatest common divisor</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>mygcd (generic function with 1 method)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>mygcd(48, 36)</code> の各反復で <code>a</code> と <code>b</code> がどう変わるか，<strong>実行前に</strong>表を埋めてみよう． <code>rem(a, b)</code> の欄には，<strong>置き換える前の</strong> <code>a</code> と <code>b</code> から計算した余りを書く．</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>反復</th>
+<th><code>a</code></th>
+<th><code>b</code></th>
+<th><code>rem(a, b)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>開始</td>
+<td>48</td>
+<td>36</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>1回目後</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2回目後</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>「頭の中でループを回す（トレース）」と，アルゴリズムの動きが腑に落ちる．</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）／既知の答えと照合（L2）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>mygcd(48, 36)</code> はいくつか？ <code>48 = 2^4 × 3</code>，<code>36 = 2^2 × 3^2</code> なので，最大公約数は <strong>手計算で 12</strong> とわかる． <strong>実行前に予想</strong>してから，計算結果が <strong>既知の 12</strong> と一致するか確かめよう（L2検証）．</p>
+</div>
+</div>
+<div id="40" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mygcd</span>(<span class="fl">48</span>, <span class="fl">36</span>)                   <span class="co"># compare with the 12 computed by hand</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>12</code></pre>
+</div>
+</div>
+<p>Julia には標準の <code>gcd</code> 関数もある．自作の <code>mygcd</code> と <strong>同じ結果</strong>になることを確かめれば， 実装が正しいことの <strong>裏付け</strong> がもうひとつ増える（L2）． ただし一致は <strong>証拠</strong> であって証明ではない．いくつかの入力で合っても，全部の入力で合う保証はない．</p>
+<div id="42" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gcd</span>(<span class="fl">48</span>, <span class="fl">36</span>)                     <span class="co"># does the library agree with mygcd?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>12</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-summary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-summary">今回のまとめ</h2>
+<ul>
+<li>整数は <strong>有限のビット世界＝2の補数</strong>．<code>Int8</code> は <strong>−128〜127</strong>（<code>typemax</code>・<code>typemin</code>）．</li>
+<li><code>bitstring</code> で並びが見える．<strong>全部1が <code>-1</code></strong>（2の補数）．整数は <strong>1本の輪</strong>になっている．</li>
+<li><strong>オーバーフロー</strong>：<code>Int8(127)+Int8(1)</code> は <code>-128</code>，自作の <code>myfactorial(21)</code> は負． <strong>エラーが出ずに静かに間違う</strong>（有限だから一周する）．</li>
+<li>整数の割り算は <strong><code>div</code>（整商）・<code>rem</code>・<code>mod</code></strong>．<strong>負の数で <code>rem</code> と <code>mod</code> は符号が違う</strong>． <code>17 / 5</code> は小数（<strong>型が変わる</strong>）．</li>
+<li><strong>ユークリッド互除法</strong> <code>mygcd</code> は，余りが <code>0</code> になるまで <code>rem</code> を繰り返す． 既知の <code>gcd</code> と <strong>照合</strong>して正しさを確かめる（L2）．</li>
+<li>次回（<a href="./ch10.html">第10回</a>）は <strong>浮動小数点＝丸めでズレる</strong>．整数（有限で溢れる）と対で， <strong>「計算機の数 ≠ 数学の数」</strong> を完成させる．</li>
+</ul>
+<!-- doc-links: generated by build-doc-links.py -- do not edit by hand -->
+<section id="この回で使った関数" class="level3">
+<h3 class="anchored" data-anchor-id="この回で使った関数">この回で使った関数</h3>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/base/numbers/#Core.Int8"><code>Int8</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/numbers.html#Core.Int8">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/numbers/#Base.big"><code>big</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/numbers.html#Base.big">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/numbers/#Base.bitstring"><code>bitstring</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/numbers.html#Base.bitstring">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.div"><code>div</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.div">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.gcd"><code>gcd</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.gcd">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.mod"><code>mod</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.mod">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/numbers/#Base.one"><code>one</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/numbers.html#Base.one">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/math/#Base.rem"><code>rem</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/math.html#Base.rem">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/base/#Base.typemax"><code>typemax</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/base.html#Base.typemax">日本語訳</a>）</li>
+<li><a href="https://docs.julialang.org/en/v1/base/base/#Base.typemin"><code>typemin</code></a>（<a href="https://atelierarith.github.io/UnofficialJuliaDoc-ja/base/base.html#Base.typemin">日本語訳</a>）</li>
+<li><code>gamma</code> … <a href="https://specialfunctions.juliamath.org/stable/functions_list/#SpecialFunctions.gamma">SpecialFunctions.jl のドキュメント</a>（日本語訳なし）</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>練習
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><code>Int8(-128) - Int8(1)</code> を予測してから確かめよ（最小値の下は？ 輪を思い出そう）．</li>
+<li><code>rem(7, -3)</code> と <code>mod(7, -3)</code> を予測せよ（今度は <strong>割る数</strong>が負）．<code>rem</code> と <code>mod</code> の符号の基準を確かめよ．</li>
+<li><code>mygcd(1071, 462)</code> を，まず手で求め（求め方は一つではない），関数の結果と照合せよ．</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-discuss" class="level2">
+<h2 class="anchored" data-anchor-id="sec-discuss">みんなで考えよう</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>答えは配りません
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>近くの人と話し合う．</p>
+</div>
+</div>
+<p>平面上の点の並びが与えられたとき，それが <strong>n角形</strong> になっているかを判定したい． 座標の並びは，これまでと同じく最後に始点を繰り返して閉じているとする．</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span>]</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">0</span>]</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<ol type="1">
+<li>この並びは四角形か，五角形か．</li>
+<li>「n角形である」と言うために，点の並びは何を満たしていなければならないか．条件を挙げよ． 3.（持ち帰り）点を <strong>並べ替えてよい</strong> としたら，どんな点の集まりなら n角形を作れるか． これは <strong><a href="./ch11.html">第11回</a></strong> でもう一度考える．</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "コピーしました");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "コピーしました");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ch08.html" class="pagination-link" aria-label="第8回：配列の生成・要素代入と篩">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">第8回：配列の生成・要素代入と篩</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ch10.html" class="pagination-link" aria-label="第10回：浮動小数点と数値誤差">
+        <span class="nav-page-text">第10回：浮動小数点と数値誤差</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
