@@ -824,7 +824,7 @@
     "href": "ch03.html#sec-accumulate",
     "title": "第3回：for文・総和・パラメータ作図",
     "section": "総和：再代入を繰り返して足しこむ",
-    "text": "総和：再代入を繰り返して足しこむ\n第1回で x = x + 1（右辺を今の値で計算 → 名前を貼り替え）をやった． これをループの中で繰り返すと，値をためていく ことができる． なお s = s + x は s += x と短く書ける（意味は同じ）．以降の回でもこの書き方が出てくる．\n\n\n\n\n\n\n重要予測しよう（L1）\n\n\n\n次のセルで，最後の s はいくつになるか，実行する前に予想しよう． 各回のループのあと s がどう変わるかを，下の表に書き出すとよい．\n\n\n\nx\n実行後の s（予測）\n\n\n\n\n1\n\n\n\n2\n\n\n\n3\n\n\n\n4\n\n\n\n\n\n\n\ns = 0                      # initialize (outside the loop!)\nfor x in [1, 2, 3, 4]      # iterate over the values themselves\n    s = s + x              # update s each time (reassignment)\nend\ns                          # compare with your prediction\n\n10\n\n\n頭の中で1行ずつ追うことを トレース という．表と実行結果は一致しただろうか．",
+    "text": "総和：再代入を繰り返して足しこむ\n第1回で x = x + 1（右辺を今の値で計算 → 名前を貼り替え）をやった． これをループの中で繰り返すと，値をためていく ことができる． なお s = s + x は s += x と短く書ける（意味は同じ）．以降の回でもこの書き方が出てくる．\n\n\n\n\n\n\n重要予測しよう（L1）\n\n\n\n次のセルで，最後の s はいくつになるか，実行する前に予想しよう． 各回のループのあと s がどう変わるかを，下の表に書き出すとよい．\n\n\n\nx\n実行後の s（予測）\n\n\n\n\n1\n\n\n\n2\n\n\n\n3\n\n\n\n4\n\n\n\n\n\n\n\ns = 0                      # initialize (outside the loop!)\nfor x in [1, 2, 3, 4]      # iterate over the values themselves\n    s = s + x              # update s each time (reassignment)\nend\ns                          # compare with your prediction\n\n10\n\n\n頭の中で1行ずつ追うことを トレース（机上実行）という．表と実行結果は一致しただろうか．",
     "crumbs": [
       "第3回：for文・総和・パラメータ作図"
     ]
