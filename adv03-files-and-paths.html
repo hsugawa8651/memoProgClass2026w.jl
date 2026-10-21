@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>発展：ファイルとパス – プログラミング演習（2026）</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d3f3448f837ff03356db176d8adb603.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "一致なし",
+    "search-matching-documents-text": "一致した文書",
+    "search-copy-link-title": "検索へのリンクをコピー",
+    "search-hide-matches-text": "追加の検索結果を非表示",
+    "search-more-match-text": "追加の検索結果",
+    "search-more-matches-text": "追加の検索結果",
+    "search-clear-button-title": "消去",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "検索",
+    "search-label": "サーチ"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      プログラミング演習（2026）
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="サイドバーを切り替える" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="サーチ" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">プログラミング演習（2026）</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="サーチ"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">はじめに</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第1回：変数・代入・再代入</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第2回：ベクトルと基本プロット</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第3回：for文・総和・パラメータ作図</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第4回：対数グラフで直線化・数式モード</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第5回：平面図形の変形</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第6回：条件分岐とはさみうち</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第7回：関数定義の初歩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第8回：配列の生成・要素代入と篩</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第9回：整数・剰余と互除法</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第10回：浮動小数点と数値誤差</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第11回：復習</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第12回：反復の設計と数値積分</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第13回：関数の作り込み</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第14回：行列と回転行列</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">第15回：複素数とガウス平面</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">さらに学ぶために</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目次</h2>
+   
+  <ul>
+  <li><a href="#sec-pwd" id="toc-sec-pwd" class="nav-link active" data-scroll-target="#sec-pwd">自分がどこにいるか</a></li>
+  <li><a href="#sec-joinpath" id="toc-sec-joinpath" class="nav-link" data-scroll-target="#sec-joinpath">パスを組み立てる</a></li>
+  <li><a href="#sec-backslash" id="toc-sec-backslash" class="nav-link" data-scroll-target="#sec-backslash">落とし穴の例：エクスプローラのパスをそのまま貼ると</a></li>
+  <li><a href="#sec-write" id="toc-sec-write" class="nav-link" data-scroll-target="#sec-write">ファイルに書く</a>
+  <ul class="collapse">
+  <li><a href="#sec-verify" id="toc-sec-verify" class="nav-link" data-scroll-target="#sec-verify">書いたら確かめる</a></li>
+  <li><a href="#sec-doend" id="toc-sec-doend" class="nav-link" data-scroll-target="#sec-doend"><code>close</code> を忘れない書き方</a></li>
+  </ul></li>
+  <li><a href="#sec-printf" id="toc-sec-printf" class="nav-link" data-scroll-target="#sec-printf">書式をそろえて表示する</a></li>
+  <li><a href="#sec-nokanji" id="toc-sec-nokanji" class="nav-link" data-scroll-target="#sec-nokanji">図の中の文字は英語で書く</a></li>
+  <li><a href="#sec-notcovered" id="toc-sec-notcovered" class="nav-link" data-scroll-target="#sec-notcovered">この資料で扱わなかったこと</a></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary">まとめ</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">発展：ファイルとパス</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>この資料について
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>これは <strong>発展</strong> であり，必修ではない．取り組むかは自由で，成績の素点には含めない． <a href="./ch03.html">第3回</a>までの道具（変数・ベクトル・<code>for</code>・<code>println</code>）だけで読める．</p>
+<p>扱うのは，<strong>計算機がファイルをどう並べているか</strong>と，<strong>Julia からその場所をどう指すか</strong>である． レポートに図を貼る，データを読む，結果を保存する——どれもここが分かっていないと詰まる．</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>この資料のキーワード
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>ファイルを触る前に <strong><code>pwd()</code> で自分のいる場所を確かめる</strong>．</li>
+<li>区切り文字（<code>\</code> か <code>/</code>）は <strong>自分で書かず <code>joinpath</code> に任せる</strong>．</li>
+<li>書いたら <strong>確かめる</strong>．<code>isfile</code> と読み戻しで照合する（<a href="./ch03.html">第3回</a>までの「照合」と同じ）．</li>
+</ul>
+</div>
+</div>
+<section id="sec-pwd" class="level2" data-index="カレントディレクトリ, pwd, readdir, パス">
+<h2 data-index="カレントディレクトリ, pwd, readdir, パス" class="anchored" data-anchor-id="sec-pwd">自分がどこにいるか</h2>
+<p>計算機の中のファイルは，<strong>フォルダ（ディレクトリ）が入れ子になった木</strong>の上に置かれている． プログラムは，その木のどこか1か所に <strong>いま居る</strong>．そこを <strong>カレントディレクトリ</strong> という．</p>
+<p><code>"hello.txt"</code> のようにフォルダ名を付けずに書いたファイル名は，<strong>いま居る場所にあるもの</strong>を指す． だから，いま居る場所が分からないままファイルを読み書きすると， 「書いたはずのファイルが見つからない」ことになる．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>次のセルは何を表示するだろうか． 自分のPCのどのフォルダが出てくるか，<strong>実行する前に</strong>見当をつけよう．</p>
+</div>
+</div>
+<div id="4" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pwd</span>()                     <span class="co"># where am I now?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>"/Users/hs/Documents/__Class/26w-MSE-prog/memoProgClass2026w-work"</code></pre>
+</div>
+</div>
+<p>これが <strong>いま居る場所</strong> である．<strong>ファイルを触る前に，まずこれを実行する</strong>．</p>
+<p>同じ notebook でも，<strong>VS Code で開いたときと Jupyter で開いたときで違う値になることがある</strong>． だから「自分はここにいるはず」と思い込まず，毎回確かめる．</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>2通りで動かして比べる
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>この資料は <strong>notebook（<code>.ipynb</code>）</strong> と <strong>スクリプト（<code>.jl</code>）</strong> の2つの形で配ってある． 中身のコードは同じものである．</p>
+<p><code>pwd()</code> を両方で実行して，<strong>同じ値になるか</strong>を確かめてみよう． 同じなら「この環境では一致する」，違うなら「開き方で変わる」と分かる． どちらであっても，<strong>確かめた</strong>ことに意味がある．</p>
+</div>
+</div>
+<p>次に，いま居る場所に何が置かれているかを見る．</p>
+<div id="6" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readdir</span>()                 <span class="co"># what is here?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>50-element Vector{String}:
+ ".quarto"
+ ".tours"
+ ".vscode"
+ "20260623-codex-review.md"
+ "IPA_Font_License_Agreement_v1.0.txt"
+ "Manifest.toml"
+ "Project.toml"
+ "_adv-ch03.qmd"
+ "_advanced.yml"
+ "_ai-declaration.qmd"
+ ⋮
+ "hello2.txt"
+ "index.qmd"
+ "ipaexg.ttf"
+ "make-standalone-notebooks.py"
+ "notebooks"
+ "prepare-publish.sh"
+ "site"
+ "site-publish"
+ "site-teacher"</code></pre>
+</div>
+</div>
+<p>この一覧に <strong>自分が開いている notebook のファイル名</strong>があれば， notebook と同じ場所に居る．無ければ，別の場所に居る．</p>
+</section>
+<section id="sec-joinpath" class="level2" data-index="パス>絶対パス, パス>相対パス, joinpath, basename, dirname">
+<h2 data-index="パス>絶対パス, パス>相対パス, joinpath, basename, dirname" class="anchored" data-anchor-id="sec-joinpath">パスを組み立てる</h2>
+<p>ファイルの場所を表す文字列を <strong>パス</strong> という．2種類ある．</p>
+<ul>
+<li><strong>相対パス</strong> … いま居る場所からの道順．<code>"hello1.txt"</code>，<code>"data/a.csv"</code></li>
+<li><strong>絶対パス</strong> … 木の一番上からの道順．<code>"C:/Julia/PKG"</code>，<code>"/Users/hs/a.txt"</code></li>
+</ul>
+<p>相対パスは短くて済むが，<strong>いま居る場所が変わると意味が変わる</strong>． 絶対パスは長いが，どこから実行しても同じ場所を指す．</p>
+<p>パスをつなぐときは，<code>*</code> で文字列を貼り合わせるのではなく <strong><code>joinpath</code></strong> を使う．</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>予測しよう（L1）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>joinpath("data", "a.csv")</code> は何を返すだろうか． 区切り文字は何になるか，<strong>実行する前に</strong>予想しよう．</p>
+</div>
+</div>
+<div id="8" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">joinpath</span>(<span class="st">"data"</span>, <span class="st">"a.csv"</span>)      <span class="co"># join parts into one path</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>"data/a.csv"</code></pre>
+</div>
+</div>
+<p>区切り文字は <strong>OS が決める</strong>．Windows なら <code>\</code>，macOS や Linux なら <code>/</code> になる． <strong>自分で区切り文字を書かない</strong>のが要点である．<code>joinpath</code> に任せれば，どのOSでも正しくなる．</p>
+<p><code>pwd()</code> と組み合わせると，いま居る場所を基準に <strong>絶対パス</strong> を作れる．</p>
+<div id="10" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">joinpath</span>(<span class="fu">pwd</span>(), <span class="st">"hello1.txt"</span>)  <span class="co"># absolute path, built from where we are</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>"/Users/hs/Documents/__Class/26w-MSE-prog/memoProgClass2026w-work/hello1.txt"</code></pre>
+</div>
+</div>
+<p>パスを分解する関数もある．</p>
+<div id="12" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>[<span class="fu">basename</span>(<span class="st">"/a/b/fig.png"</span>), <span class="fu">dirname</span>(<span class="st">"/a/b/fig.png"</span>)]   <span class="co"># file name, and the folder it sits in</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{String}:
+ "fig.png"
+ "/a/b"</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-backslash" class="level2" data-index="落とし穴の例, パス>区切り文字, raw文字列">
+<h2 data-index="落とし穴の例, パス>区切り文字, raw文字列" class="anchored" data-anchor-id="sec-backslash">落とし穴の例：エクスプローラのパスをそのまま貼ると</h2>
+<p>Windows のエクスプローラでパスをコピーすると <code>C:\Users\you\Documents</code> のような形で得られる． これを <strong>そのまま</strong> <code>"..."</code> の中に入れると，Julia は受け付けない．</p>
+<p>次のコードは <strong>実行できない</strong>．セルとして置いていないのは， 動かす前の <strong>読み込む段階</strong> でエラーになるからである．</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="st">"C:\Users"</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>ERROR: ParseError:
+# Error @ none:1:8
+x = "C:\Users"
+#      └┘ ── invalid unicode escape sequence</code></pre>
+<p><code>"..."</code> の中の <strong><code>\</code> は「次の文字と組にして特別な意味を表す」合図</strong> である． <code>\n</code> が改行を表すのと同じ仕組みで，<code>\U</code> は「これから文字コードを書く」という合図になる． <code>\Users</code> の <code>U</code> がそれに取られてしまい，文字コードが続かないので壊れる．</p>
+<p>直し方は3つある．</p>
+<div id="14" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>[<span class="st">raw"C:\Users"</span>, <span class="st">"C:</span><span class="sc">\\</span><span class="st">Users"</span>, <span class="st">"C:/Users"</span>]   <span class="co"># three ways that all work</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>3-element Vector{String}:
+ "C:\\Users"
+ "C:\\Users"
+ "C:/Users"</code></pre>
+</div>
+</div>
+<ul>
+<li><strong><code>raw"..."</code></strong> … <code>\</code> を特別扱いしない書き方．貼り付けたパスをそのまま使える</li>
+<li><strong><code>"C:\\Users"</code></strong> … <code>\</code> を2つ重ねて「<code>\</code> という文字そのもの」を表す</li>
+<li><strong><code>"C:/Users"</code></strong> … <code>/</code> で書く．<strong>Windows の Julia は <code>/</code> でも正しく扱う</strong></li>
+</ul>
+<p>この資料では <strong><code>/</code> で書くか，<code>joinpath</code> に任せる</strong> ことを勧める．<code>\</code> を自分で書く場面をなくせる．</p>
+</section>
+<section id="sec-write" class="level2" data-index="ファイル>書き込み, open, close, println">
+<h2 data-index="ファイル>書き込み, open, close, println" class="anchored" data-anchor-id="sec-write">ファイルに書く</h2>
+<p><code>open(fn, "w")</code> は，ファイル名 <code>fn</code> のファイルを <strong>作って，書き込む準備をする</strong>． <code>fn</code> が既にあっても構わない．その場合，<strong>元の中身は捨てられる</strong>．</p>
+<p><code>open</code> が返す <code>f</code> を <code>println(f, s)</code> の <strong>第1引数</strong> に渡すと，文字列 <code>s</code> をそのファイルに1行書く． <a href="./ch03.html">第3回</a>で使った <code>println(x)</code> は画面に書いたが，<code>println(f, x)</code> は <strong>ファイルに書く</strong>．</p>
+<p>書き終わったら <strong><code>close(f)</code></strong> を呼ぶ．これを忘れると，中身が書かれないことがある．</p>
+<div id="16" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fu">open</span>(<span class="st">"hello1.txt"</span>, <span class="st">"w"</span>)    <span class="co"># create (or empty) the file</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(f, <span class="st">"Hello"</span>)            <span class="co"># write one line</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(f, <span class="st">"again."</span>)           <span class="co"># and another</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">close</span>(f)                       <span class="co"># finish writing</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="sec-verify" class="level3" data-index="検証>ファイル, isfile, eachline">
+<h3 data-index="検証>ファイル, isfile, eachline" class="anchored" data-anchor-id="sec-verify">書いたら確かめる</h3>
+<p><a href="./ch03.html">第3回</a>まで，実行結果は必ず <strong>既知の答えと照合</strong>してきた．ファイルでも同じである． ここでの既知の答えは <strong>自分が書いた2行</strong> である．</p>
+<p>まず，ファイルが本当に出来たかを見る．</p>
+<div id="18" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">isfile</span>(<span class="st">"hello1.txt"</span>)           <span class="co"># does it exist now?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>true</code></pre>
+</div>
+</div>
+<p>次に，<strong>読み戻して</strong>中身を見る．<code>eachline(fn)</code> は，ファイルの中身を <strong>1行ずつ</strong> 取り出す． <code>for</code> でそのまま走査できる（行末の改行は取り除かれている）．</p>
+<div id="20" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> line <span class="kw">in</span> <span class="fu">eachline</span>(<span class="st">"hello1.txt"</span>)    <span class="co"># read it back, line by line</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(line)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hello
+again.</code></pre>
+</div>
+</div>
+<p>書いた2行がそのまま出てくれば一致している．行の <strong>配列</strong> が欲しいときは <code>readlines</code> を使う．</p>
+<div id="22" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readlines</span>(<span class="st">"hello1.txt"</span>)        <span class="co"># the lines as an array of strings</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{String}:
+ "Hello"
+ "again."</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>画面の外でも確かめる
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ここまでは Julia の中だけで確かめた．<strong>計算機のほうからも</strong>確かめておきたい．</p>
+<p>Windows のエクスプローラを開き，<code>pwd()</code> が表示した場所に <code>hello1.txt</code> が出来ていることを確かめよ． 「メモ帳」で開き，書いたとおりの2行が入っていることを目で見よ． （macOS なら「ファインダー」と「テキストエディット」に読み替える）</p>
+<p><strong>プログラムの外から同じものが見える</strong>ことを一度確認しておくと， 以降「ファイルが出来ない」で悩む時間が大きく減る．</p>
+</div>
+</div>
+</section>
+<section id="sec-doend" class="level3" data-index="open>do記法, close">
+<h3 data-index="open>do記法, close" class="anchored" data-anchor-id="sec-doend"><code>close</code> を忘れない書き方</h3>
+<p><code>open</code> と <code>close</code> は <strong>対</strong>で使う．間でエラーが起きると <code>close</code> に到達せず，中身が残らないことがある． これを避ける書き方がある．</p>
+<div id="24" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open</span>(<span class="st">"hello2.txt"</span>, <span class="st">"w"</span>) <span class="cf">do</span> g   <span class="co"># close is called automatically at `end`</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(g, <span class="st">"one"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(g, <span class="st">"two"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">readlines</span>(<span class="st">"hello2.txt"</span>)        <span class="co"># check: did it get written?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>2-element Vector{String}:
+ "one"
+ "two"</code></pre>
+</div>
+</div>
+<p><code>end</code> まで来ると <strong><code>close(g)</code> が自動で呼ばれる</strong>ので，書き忘れが起きない． <code>do ... end</code> の仕組み自体（関数に処理を渡している）は <a href="./ch13.html">第13回</a>で扱う． ここでは <strong>「<code>close</code> を忘れない書き方」</strong> として覚えておけばよい．</p>
+</section>
+</section>
+<section id="sec-printf" class="level2" data-index="Printf, @printf, @sprintf, 書式">
+<h2 data-index="Printf, @printf, @sprintf, 書式" class="anchored" data-anchor-id="sec-printf">書式をそろえて表示する</h2>
+<p>誤差や計算結果を並べるとき，<code>println</code> だけでは <strong>桁がそろわない</strong>． 桁をそろえるには標準ライブラリの <strong><code>Printf</code></strong> を使う．</p>
+<div id="26" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Printf</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> (<span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@printf</span>(<span class="st">"n = %6d   1/n = %10.6f</span><span class="sc">\n</span><span class="st">"</span>, n, <span class="fl">1</span><span class="op">/</span>n)   <span class="co"># width 6 integer, width 10 with 6 decimals</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n =     10   1/n =   0.100000
+n =    100   1/n =   0.010000
+n =   1000   1/n =   0.001000</code></pre>
+</div>
+</div>
+<p><code>%6d</code> は「整数を幅6で」，<code>%10.6f</code> は「小数を幅10・小数点以下6桁で」という指定である． <code>\n</code> が改行で，<code>@printf</code> は自分では改行しないので，必要なら書く．</p>
+<p>値を <strong>文字列として</strong> 受け取りたいときは <code>@sprintf</code> を使う（<code>s</code> は string の s）．</p>
+<div id="28" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="pp">@sprintf</span>(<span class="st">"%8.3e"</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">3</span>)     <span class="co"># 8 wide, scientific with 3 decimals</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>"3.333e-01"</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">警告</span>落とし穴の例：書式と引数の数が合わないと
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>%</code> の個数と，後ろに渡す値の個数は <strong>合っていなければならない</strong>． 次のセルは何が起こるだろうか．</p>
+</div>
+</div>
+<div id="30" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@errmsg</span> <span class="pp">@printf</span>(<span class="st">"%d %d</span><span class="sc">\n</span><span class="st">"</span>, <span class="fl">1</span>)     <span class="co"># two specifiers, but only one value</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ArgumentError: Number of format specifiers and number of provided args differ: 2 != 1</code></pre>
+</div>
+</div>
+<p>数が合わないと <strong>その場でエラーになる</strong>．黙って変な値が出るのではないので，気付きやすい．</p>
+</section>
+<section id="sec-nokanji" class="level2" data-index="プロット>フォント, 日本語, 落とし穴の例">
+<h2 data-index="プロット>フォント, 日本語, 落とし穴の例" class="anchored" data-anchor-id="sec-nokanji">図の中の文字は英語で書く</h2>
+<p>この教材のグラフは，<strong>図の中の文字（題・軸ラベル・凡例）をすべて英語</strong>にしている． 説明したいことは，図ではなく <strong>Markdown セルの文章</strong> に日本語で書く．</p>
+<p>理由は，図に漢字を入れると <strong>黙って豆腐（□）になる</strong>ことがあるからである． エラーが出ないので，提出したあとで気付くことになる．</p>
+<div id="32" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>([<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], [<span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">9</span>], title <span class="op">=</span> <span class="st">"time vs distance"</span>, xlabel <span class="op">=</span> <span class="st">"time"</span>, ylabel <span class="op">=</span> <span class="st">"distance"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<img src="data:image/png;base64,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ypUr5oexsbGapun1+unTp5c6mqIo+fn5V65cqV+//t1O17Vr10OHDsXFxbVv314IERERcerUqSeffLL4VtXnn39+4cKFU6ZMWbp06VNPPdWnT59evXqV3TGUkJAghGjbtq0k3fIfzqOPPlr2j9+5c+fWrVtv3749ICBgwIABvXv37tevX8mwVQZVVX/88ceffvrpzJkzV65cKRmzMjMzGzZsWPywXr161apVK/lc8/3JxS+pubuqjGrPnTt3/fr1mjVr/vOf/yz1ratXr5p3KDkWB3BOBA7AdpUa9mgeqlly6KUQwvwprv13USTzjTCpqalhYWG3H9DLy6vs1oK///3vhw4dWrZs2ZdffimEWLZsmXlj8Q4dO3Y8ePDgRx99tGfPntjY2E8//bRatWpvv/32u+++e7dhHDk5OUKI229jueeNLa6urvv27fvwww/Xrl27ePHixYsX6/X6QYMGzZ8/v0GDBmU/d/Lkyd9//32dOnUGDBhQr1498x06q1atiouLk2W55J6lXmTx35e0+E4i84DfevXq3e1c5tc8Kyvrbq8585IBgsABOBjzP+vBwcGbN28ux9NHjhz55ptvrly58rPPPlMU5Zdffqlatap56Emxzp07b9u2LScn5+DBgzt27Fi6dOlHH30khPjwww/LKKm4waDY7VtuV6tWrW+//Xb+/PlxcXHh4eHLli3bsGHDuXPnoqKi9Hr93Z516tSp77//vmXLlkeOHCl5k4v5TpwH5enpKYS4dOnS3XYw/4CNGzdOTEwsx/EBJ8EYDqDymNsASv2HXbHMIzEjIyPLd5bq1asPGTLk6tWr27Zt27hx4/Xr10eMGFG1atXb96xatepTTz315ZdfhoeHCyF+/fXXux2zTZs2Qoi4uDhFUUpuv/8pzPV6/WOPPTZ16tTY2NjmzZsfO3aseFTEHV9ScydISEhIybRRVFQUHx9/n2csyfySRkdH322Hxo0b16hR48yZM+np6eU4PuAkCBxA5TE3y1+8eNGip+jXr9/Vq1e/+uqr279r7t0om7kDZdmyZbf3p9zxCOZJusroqalXr16XLl1SU1PXrFlTvFGW5blz55Zdye3nMhqN5skwik93x5fUPM7j/PnzJTd+/fXX5QsEAwcO9PLy2rJly8GDB++4g16vf/755zVN+9///d/ivq0yfgrAOdGlAlSewMBAIcTU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4Z49e0JCQjp16vToo49auyjc28WLF4cPH/7FF18EBASU+lbJS1WSJBcXFy5VezFnzpw//vgjIiLi9m8tX77cfKnu27evf//+gYGBjz/+eKUXiAfj4+MTEBCQlJS0f//+rKysUqPyS16qVapUqZDr1EFaOHx9fa9du2b+OisrS5blunXrWrckPLzi2xz69OnTpUuXgwcPWrce3I+0tLSgoKCXX355woQJt3+35KWam5tbUFDApWoXvv322++++27Xrl13XNmr+FLt1atX9+7dDxw4ULnVoTyCgoJef/31zZs3y7K8bNmyUt/19fXNzMw0f52ZmVkh16mDBI6OHTsWfxodPHiwcePG3t7e1i0JFcjcR2YeowNblp6eHhwcPHbs2P/5n/+54w4lL9UDBw40bNjQx8enEgtEeSxZsuRf//rXrl276tevX/aeqqpeunSJS9W+uLu73z74JjAwsOSnamBg4MOfSP/RRx89/FEsLTExcd26dfv37z979qwkSXl5eQ0bNszLy/Pz8xs4cGDt2rVbtGjx/vvvFxUVZWdnv/XWW1OmTOncubO1q8Y9rF69+tChQ1u3bvX09ExOTm7RooWLi8snn3wSFhY2dOjQq1evTps2LTc39/Tp0x988MGlS5e+/PJLpm2wcT169BBC9O7dOzo6Ojo6WlVVPz+/wsLCevXqhYSE+Pj4NG/efMaMGfn5+Tk5OW+//fYrr7xye+cxbMrWrVtHjRo1ceLE69evm9/W9u3bS5I0Z86cb7/99plnnsnMzPyf//kf86U6Y8aMc+fOzZ07t0qVKtYuHHd17ty5Dz/8MDs7OyUlZf78+bt27Zo3b16NGjV+//33Hj16vPnmm0KI+vXrT5kyxc/P78SJEzNmzJg3b555coqHYR9jOMyvS/PmzZs3b56SklK7dm0hhMFgGDNmjLl9z8vLa//+/V999VVUVNS0adPGjRtn7ZJxb6mpqZmZma+//rqqqikpKeY5vh599FHzrStVq1b18fH59ddfVVVt165dWFgYE3/ZvgEDBsiynJKSYn5oHsOh1+uLL1VPT88DBw58+eWXMTExb7311h27XWBTqlevPnXqVCFE8duqaZoQol27duaWDHd39zp16vz666+KorRt23bRokWenp5WLBj35O3tXbdu3fXr1xcWFrZs2TImJsYcJnx9fZ977jnzPp06dVq3bt3ixYs1TVuzZk337t0f/rw6868OAACA5TjIGA4AAGDLCBwAAMDiCBwAAMDiCBwAAMDiCBwAAMDiCBwAAMDi/n97d/OSShTGcfxc6dVsYKaFRIGtFForbQIDy529ELhrERYm2EKiVf0DtS16cdUmkCAIWgkFRhFBtbQXLJCEoolQKFLsZe5CiLj3ckFy0uL7WR0ezhyesxl+HGY4BA4AAKA7AgeAEtjd3d3c3Cx3FwAqF4EDQHHy+Xw4HD45OflYXFpampqaKldLACofgQNAcbLZrN/vj8ViH4ter3d8fLxMHQH4Br7HXSoAKlxfX98/609PT7lc7uP1oZlMxmg01tTU/D05l8tlMhlZlrmlD/h5OOEAUIRkMlm4km1yclJRFEVRwuGwECIYDLpcrsKc09NTRVEikcjg4GBjY2NTU1NnZ+ft7W08Hnc4HLIsm0ymsbGx5+fn92VTqdTAwIAkSc3NzbIs+/3+bDZbjv0B0AsnHACKYDabV1ZW+vv7R0ZGPB6PEMJmswkh0un03d1dYc7r62s6nQ6FQkNDQ/v7+xcXF4FAYHh4OJlMBoPBxcXFaDQ6PT3tcDh8Pl/hWafTWVdXt7a2ZrVaDw8PQ6HQ4+Pj6upqGXcKoLQIHACKUF9f39XVJYSw2Wzd3d3/melyuWZnZ4UQHR0dBwcH8/PzCwsLgUBACGG329fX1zc2NgqBY25u7vr6+vz83GKxCCHa29tfXl5GR0dnZmZaW1u/YFMAvgCBA4Au3G73+9hqtf5dOTs7K4yj0WhbW1sikUgkEoVKVVWVpmnxeJzAAfwYBA4AupBl+X1c+ET0Y6W2tjafzxfGqqpeXV15vd4/Hr+/v/+STgF8BQIHgDKTJMnhcOzt7ZW7EQA64i8VAMUxGo0GgyGXy5VqQafTeXR0dHl5WaoFAVQgAgeA4lRXV1ut1kgksr29fXx8rKrqJxecmJiQJKm3t3dra+vh4UFV1Vgs5vP5SphpAJQdgQNA0ZaXl9/e3jwej91uj0Qin1ytpaVlZ2dHUZSenh5Jksxms9vtTqVSBgMvKODn+KVpWrl7APDtaZqmadonI8LNzU0qlTKZTBaLpaGhoVS9AagEBA4AAKA7TiwBAIDuCBwAAEB3BA4AAKA7AgcAANAdgQMAAOjuN1dQX6Ui0G26AAAAAElFTkSuQmCC">
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>どうしても図に日本語を入れたいとき
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>日本語のフォントを別に用意して登録すれば表示できる． ただし <strong>フォントのファイルを一緒に配る必要があり，環境によって手順が変わる</strong>ので， この教材では採らない．やってみたい人は次を参照．</p>
+<ul>
+<li>GR へのフォント登録の解説：<a href="https://ujimushisradjp.hatenablog.jp/entry/2025/01/17/222826" class="uri">https://ujimushisradjp.hatenablog.jp/entry/2025/01/17/222826</a></li>
+<li>IPAex フォント（配布元）：<a href="https://moji.or.jp/ipafont/" class="uri">https://moji.or.jp/ipafont/</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec-notcovered" class="level2" data-index="cd, rm, ファイル>削除">
+<h2 data-index="cd, rm, ファイル>削除" class="anchored" data-anchor-id="sec-notcovered">この資料で扱わなかったこと</h2>
+<p>ファイルやフォルダを操作する関数は他にもあるが，ここでは <strong>わざと扱わない</strong>．</p>
+<ul>
+<li><strong><code>cd()</code>（居る場所を移動する）</strong> … 呼ぶと，それ以降のセルで相対パスの意味が変わる． notebook を上から実行し直したときに <strong>結果が変わってしまう</strong>． この教材は「同じ手順なら同じ結果になる」ことを検証の土台にしているので，それを崩す道具は使わない． 移動する代わりに，<strong><code>pwd()</code> で場所を確かめて <code>joinpath</code> で指す</strong>．</li>
+<li><strong><code>rm</code>（ファイルを消す）など</strong> … 取り返しがつかない． 間違えて配布 notebook やレポートを消すほうが，学べることより大きい． ファイルを消すときは <strong>エクスプローラ（ファインダー）</strong> で行う．</li>
+</ul>
+</section>
+<section id="sec-summary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-summary">まとめ</h2>
+<ul>
+<li>ファイルを触る前に <strong><code>pwd()</code></strong>．いま居る場所が，フォルダ名なしのファイル名の意味を決める．</li>
+<li><strong><code>readdir()</code></strong> で，いま居る場所の中身が見える．notebook のファイル名があれば同じ場所に居る．</li>
+<li>パスは <strong><code>joinpath</code></strong> で組み立てる．区切り文字（<code>\</code> か <code>/</code>）を自分で書かない．</li>
+<li><strong>落とし穴</strong>：<code>"C:\Users"</code> は <code>\U</code> が特別な意味に取られて <strong>読み込む段階でエラー</strong>． <code>raw"..."</code>／<code>"\\"</code>／<code>"/"</code> のどれかにする．この教材は <code>/</code> と <code>joinpath</code> を勧める．</li>
+<li>書き込みは <strong><code>open(fn, "w")</code> → <code>println(f, s)</code> → <code>close(f)</code></strong>．<code>do ... end</code> なら <code>close</code> を忘れない．</li>
+<li>読み込みは <strong><code>eachline(fn)</code></strong>（1行ずつ）か <strong><code>readlines(fn)</code></strong>（配列で）．<code>open</code> は要らない．</li>
+<li>書いたら <strong>確かめる</strong>：<code>isfile</code> で存在を，読み戻しで中身を．さらに <strong>エクスプローラとメモ帳でも</strong>見る．</li>
+<li>桁をそろえて表示するには <strong><code>using Printf</code></strong> と <strong><code>@printf</code></strong>／<strong><code>@sprintf</code></strong>．<code>%</code> の数と値の数を合わせる．</li>
+<li><strong>図の中の文字は英語</strong>．漢字は Markdown セルの文章に書く．</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>練習
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><code>pwd()</code> を，この資料の <code>.ipynb</code> と <code>.jl</code> の両方で実行し，同じ値になるか確かめよ． 違った場合，どちらがどこを指しているか（notebook の場所か，VS Code で開いたフォルダか）を調べよ．</li>
+<li><code>joinpath(pwd(), "data", "a.csv")</code> を予測してから確かめよ．自分のPCではどんな文字列になるか．</li>
+<li><code>readdir()</code> の結果の中に，いま開いている notebook のファイル名はあるか．無ければ，どこに居るのか．</li>
+<li><code>"hello3.txt"</code> に，<code>for</code> で <code>1</code> から <code>5</code> までの数を1行ずつ書き，読み戻して確かめよ．</li>
+<li>4で書いたファイルの中身を <code>@printf</code> で桁をそろえて画面に表示せよ（例：<code>%4d</code>）．</li>
+<li><code>open(fn, "w")</code> は既にあるファイルの中身を捨てる．<code>hello1.txt</code> に対して <strong>もう一度</strong> <code>open(..., "w")</code> を 実行してから何も書かずに <code>close</code> すると，中身はどうなるか．予測してから確かめよ（確かめたあと作り直してよい）．</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "コピーしました");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "コピーしました");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
