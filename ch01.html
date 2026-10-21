@@ -111,6 +111,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -457,6 +486,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>整数どうしでも <code>/</code> の結果は <strong>小数</strong>（浮動小数点数）になる． 整数の割り算（商と余り）は <strong><a href="./ch09.html">第9回</a></strong> でくわしく扱う．</p>
 </div>
 </div>
+<p><strong>べき乗</strong>（<span class="math inline">\(3^2\)</span> のような累乗）は <code>^</code> で書く．</p>
+<div id="16" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span> <span class="op">^</span> <span class="fl">2</span>       <span class="co"># 3 squared</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>9</code></pre>
+</div>
+</div>
 <p>演算子には <strong>優先順位</strong> がある．数学と同じく，<code>*</code>・<code>/</code> は <code>+</code>・<code>-</code> より <strong>先に</strong> 計算され，べき乗 <code>^</code> はさらに先に計算される（<strong><code>^</code> ＞ <code>*</code>,<code>/</code> ＞ <code>+</code>,<code>-</code></strong>）．</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -471,34 +507,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>2 + 3 * 4</code> はいくつか？　<code>*</code> と <code>+</code> のどちらが先に計算されるだろうか．</p>
 </div>
 </div>
-<div id="16" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">4</span>      <span class="co"># which operator goes first?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="18" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">4</span>      <span class="co"># which operator goes first?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>14</code></pre>
 </div>
 </div>
-<div id="18" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span> <span class="op">^</span> <span class="fl">2</span>      <span class="co"># which is applied first, ^ or *?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="20" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span> <span class="op">^</span> <span class="fl">2</span>      <span class="co"># which is applied first, ^ or *?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>18</code></pre>
 </div>
 </div>
 <p><strong>括弧</strong> <code>( )</code> を使えば，計算の順序を変えられる．</p>
-<div id="20" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span>) <span class="op">*</span> <span class="fl">4</span>    <span class="co"># parentheses change the order</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="22" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span>) <span class="op">*</span> <span class="fl">4</span>    <span class="co"># parentheses change the order</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>20</code></pre>
 </div>
 </div>
 <p>優先順位は，実際の計算で <strong>答えを左右する</strong>． たとえば二つの数の <strong>平均</strong> は <code>(10 + 20) / 2</code>（＝ 15）である． 括弧を忘れて <code>10 + 20 / 2</code> と書くと，<code>/</code> が <code>+</code> より先に計算される． つまり <code>10 + (20 / 2)</code>（＝ 20）となり，<strong>まったく別の値</strong> になってしまう．</p>
-<div id="22" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">10</span> <span class="op">+</span> <span class="fl">20</span>) <span class="op">/</span> <span class="fl">2</span>    <span class="co"># the average of 10 and 20</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="24" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">10</span> <span class="op">+</span> <span class="fl">20</span>) <span class="op">/</span> <span class="fl">2</span>    <span class="co"># the average of 10 and 20</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>15.0</code></pre>
 </div>
 </div>
-<div id="24" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fl">10</span> <span class="op">+</span> <span class="fl">20</span> <span class="op">/</span> <span class="fl">2</span>      <span class="co"># the same digits without parentheses</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="26" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fl">10</span> <span class="op">+</span> <span class="fl">20</span> <span class="op">/</span> <span class="fl">2</span>      <span class="co"># the same digits without parentheses</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>20.0</code></pre>
 </div>
@@ -564,11 +600,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<div id="26" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">2</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">+</span> <span class="fl">1</span>     <span class="co"># right side first, then rebind the name x</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">+</span> <span class="fl">1</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">*</span> <span class="fl">10</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="28" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">2</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">+</span> <span class="fl">1</span>     <span class="co"># right side first, then rebind the name x</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">+</span> <span class="fl">1</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">*</span> <span class="fl">10</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>40</code></pre>
 </div>
@@ -588,15 +624,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>比較演算子 <code>==</code> は「左右が <strong>等しいか</strong>」を調べる． その結果は，数ではなく <strong><code>true</code>（真）</strong> か <strong><code>false</code>（偽）</strong> という <strong>論理値</strong>（<code>Bool</code> 型）になる．</p>
-<div id="28" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">==</span> <span class="fl">2</span>        <span class="co"># are the two sides equal?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="30" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">==</span> <span class="fl">2</span>        <span class="co"># are the two sides equal?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
 </div>
-<div id="30" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">3</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">==</span> x <span class="op">+</span> <span class="fl">1</span>    <span class="co"># is x equal to x plus one?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="32" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">3</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">==</span> x <span class="op">+</span> <span class="fl">1</span>    <span class="co"># is x equal to x plus one?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>false</code></pre>
 </div>
@@ -631,11 +667,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>次のセルで，最後に表示される <code>b</code> はいくつか？ （<code>a</code> を後から変えても，すでに計算済みの <code>b</code> は変わるだろうか？）</p>
 </div>
 </div>
-<div id="32" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">1</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a <span class="op">+</span> <span class="fl">1</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">100</span>       <span class="co"># does this change b?</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>b</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="34" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> a <span class="op">+</span> <span class="fl">1</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">100</span>       <span class="co"># does this change b?</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>b</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>2</code></pre>
 </div>
@@ -644,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sec-pattern" class="level2">
 <h2 class="anchored" data-anchor-id="sec-pattern">再代入が生むパターン（次回への伏線）</h2>
 <p>再代入は，このあとのほぼ全アルゴリズムの種になる． たとえば，繰り返しの中で</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> s <span class="op">+</span> x     <span class="co"># accumulation (accumulator): see Lesson 3</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> s <span class="op">+</span> x     <span class="co"># accumulation (accumulator): see Lesson 3</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <p>のように値をためていく．今は「同じ仕組みが何度も出てくる」ことだけ覚えておこう．</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -664,7 +700,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="sec-summary">今回のまとめ</h2>
 <ul>
 <li>変数は <strong>名札</strong>（値に結びつける）．<code>=</code> は <strong>代入</strong>であって等式ではない．</li>
-<li>四則演算は <code>+ - * /</code>．優先順位は <strong><code>^</code> ＞ <code>*</code>,<code>/</code> ＞ <code>+</code>,<code>-</code></strong>，括弧 <code>( )</code> で順序を変えられる．</li>
+<li>四則演算は <code>+ - * /</code>，べき乗は <code>^</code>．優先順位は <strong><code>^</code> ＞ <code>*</code>,<code>/</code> ＞ <code>+</code>,<code>-</code></strong>，括弧 <code>( )</code> で順序を変えられる．</li>
 <li><strong>再代入</strong> <code>x = x + 1</code> は「右辺を今の値で計算 → 名前を貼り替える」．</li>
 <li>コードは <strong>上から順に</strong>実行され，<strong>順序が結果を決める</strong>．</li>
 <li>実行する前に <strong>予測する</strong>（L1検証）習慣をつける．</li>
@@ -687,13 +723,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li><p>次を実行する前に，最後の <code>p</code> を予測せよ．</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">5</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> p <span class="op">*</span> p</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> p <span class="op">-</span> <span class="fl">1</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">5</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> p <span class="op">*</span> p</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> p <span class="op">-</span> <span class="fl">1</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>次を実行したあと，<code>r</code> はいくつか予測してから確かめよ．</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> <span class="fl">10</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> q</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> q <span class="op">+</span> <span class="fl">1</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> <span class="fl">10</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> q</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> q <span class="op">+</span> <span class="fl">1</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p><code>r = 5</code> のとき円の面積 <code>area = 3.14 * r^2</code> を計算せよ．次に <code>r = 10</code> に再代入して 同じ式を実行し，<code>area</code> がどう変わるか予測してから確かめよ（再代入と四則演算の練習）．</p></li>
 </ol>
 </div>
@@ -703,11 +739,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sec-draw" class="level2">
 <h2 class="anchored" data-anchor-id="sec-draw">やってみよう：図形を描く（次回の予告）</h2>
 <p><strong>次回（<a href="./ch02.html">第2回</a>）でくわしく学ぶ</strong> ベクトル <code>[…]</code> と <code>plot</code> を使うと，<strong>図形</strong> も描ける． 下のコードを <strong>コピーして実行</strong>し，どんな形になるか， まず <strong>予測してから</strong> 確かめよう．書き方は <a href="./ch02.html">第2回</a> で学ぶ．</p>
-<div id="46" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span>]   <span class="co"># x coordinates of the corners (last repeats the first)</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">0</span>]   <span class="co"># y coordinates</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xs, ys)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="48" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span>]   <span class="co"># x coordinates of the corners (last repeats the first)</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> [<span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">0</span>]   <span class="co"># y coordinates</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xs, ys)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtAAAAHgCAIAAAADp837AAAABmJLR0QA/wD/AP+gvaeTAAAd2ElEQVR4nO3dfXBV9Z348ZNLeEqCGkogEERkBSmm2hZGcRRQVLSitquWbkfH1qJFV52uRTtd7cPQ2cVZ2+6W2TLjA61L0dmtdtudFag8tMCKdpEAomBrKRRUSHiQRBISAiTn90d2M/yCwgXvx5C7r9df5x6+99wPczjknXtvcgvSNE0AACJlOnsAACD/CQ4AIJzgAADCCQ4AIJzgAADCCQ4AIJzgAADCCQ4AIJzgAADCCQ4AIFznBMef//znf/7nfz6JO6Zp2tramvN56HQtLS2dPQIhXLB5yQWbr0LPbOcEx6ZNm+bPn38Sd2xtbT1w4EDO56HTNTY2dvYI5F6apk1NTZ09Bbnngs1XoWfWSyoAQDjBAQCEExwAQDjBAQCEExwAQDjBAQCEyzY46urq1qxZs2XLlmOs2blz5yuvvFJXV5eLwQCA/JFVcEyfPn3o0KF33333+PHjx40b975J8fjjj48aNeob3/jGOeec85//+Z+5nhMA6MKyCo7rr79++/btr7zyypYtW9I0/cEPftBhQV1d3fTp0xcvXrx8+fI5c+bcc889fg8dANAuq+C47LLLiouLkyTp0aPHpz/96Zqamg4LFixYMGLEiNGjRydJcsMNNzQ3N//ud7/L+awAQBdVeEKr9+zZ84tf/GLOnDkd9r/11lvDhg1r285kMkOGDNm2bdull176Qcc5fPjw3r17ly5d2r5n9OjRpaWlxx1g/+HkxZpMz57pCY3Nqa+xMVO0z2nNN2maNjdnevVyZvONCzZflSYFo/tEHfwEgqOpqWnKlCk33HDDtdde2+GPGhsbe/To0X6zd+/ex/597Lt3796yZcvMmTPb93z961+/7LLLjjvDz7ck336t+6gzDmY/Nl1CS0tBt25Oax5qaUmd2fzjgs1L+w4VFLR2W3Z1w0nct6ioKJM5zmsm2QbHwYMHb7755vLy8tmzZx/9p+Xl5atXr26/uWfPnvLy8mMcbeDAgWPGjFm0aFGWj96ue8/DVwxseeaKnid6R05x9fX1ffoUdfYU5Fiapo2NjcXFLth844LNS6t2pfe+lJaU9A46flbv4Th06NCUKVN69er1s5/9rFu3bkcvGDNmzKpVqw4dOpQkya5du7Zs2fKpT30qx5MCAF1WVsHx13/91y+99NLEiRN/+tOfPvHEEwsXLmzbf9lllz399NNJklx00UWjRo36yle+snjx4i996Us33XTT4MGDA6cGALqUrF5SGT169Mc+9rG33377f+5T+D/3mjx58jnnnNO2/fzzzz/yyCOzZ88eO3bsN77xjYhZAYAuKqvguOuuu953/4MPPti+3bdv3+9///u5GQoAyC8+SwUACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACFeYzaKWlpaVK1euWbNm165d06dPLysrO3rNj3/843feeadte/Dgwffee28uxwQAurKsnuGora392te+tmHDhn/4h3/Yu3fv+66ZO3funj17SktLS0tLTzvttJwOCQB0bVk9w9GvX79XX301TdOnnnrqGMumTJkyadKkHA0GAOSPXL6H4yc/+cl999335JNPHjx4MIeHBQC6uqye4cjGVVddNWDAgIKCgieffPJf/uVfVqxYUVj4gQevrq6uqqqaOHFi+57p06dPmDDhuI/S3Fxw+HDS0HAoN0Nzyti/f39BQUFnT0GOpWna1NSUpmlnD0KOuWDzUlNTprW1oKGh4STuW1RUlMkc5ymMnAXHzJkz2zamTp169tlnL1269JprrvmgxWVlZcOGDXvooYfa93z6058uKSk57qP07Hm4sLClpKTnhx+YU0qaptn8A6BrSdM0k8kUFxd39iDkmAs2L/VuTDOZgyUlvYOOn7PgaFdcXDx06NDq6upjPWphYd++fa+88sqcPzoAcAr6UO/hWLVq1Ysvvpgkyf79++vq6tp2vvLKK6+//vqYMWNyMB0AkBeyfYbjwgsvfPfdd5Mkueqqq7p3775u3brTTjtt3rx5tbW148aN2759++jRo0eNGpUkye9///uZM2d+4hOfCJwaAOhSsg2OxYsXH/nOrz59+iRJ8sgjj7S2tiZJMmLEiHfeeecPf/hDJpM599xz/R4OAOBI2QbHGWeccfTOtuxoc/rpp1900UW5GQoAyC8+SwUACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwggMACCc4AIBwuQyOxsbGLVu2HDx4MIfHBADyQFbBsXr16vHjx/fp02fQoEEftObnP//5mWeeef3115911lnLly/P2YAAQNeXVXCcccYZDzzwwBNPPPFBCxoaGr761a/+6le/2rhx4/e///077rijtbU1d0MCAF1bVsExfPjwG264oby8/IMWLFiwYMiQIePHj0+S5K/+6q/27t27atWqnM0IAHRxhTk5ytatW4cPH/4/RywsPPvss7du3XrxxRd/0Po0Tfft27dmzZq2m926dRs5cmSvXr1yMgwAcKrJTXDU19f37t27/WZRUVF9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gmPJkiWzZ8/u7CnIvW9+85t//OMfO3sKcuzll1/+wQ9+0NlTkHt/93d/1/6ji+SN11577bvf/W7c8btYcPiIFuhCXLB5zMnlRHWx4AAAuiLBAQCE65wfi33mmWceeOCBcePGnegdt23btnPnzgsvvDBiKjrRokWLLr744tNOO62zByGXampqNm3adBJXOqe45cuXV1ZWdviMC7q6vXv3rlu37siPOcveVVdddeeddx57TecER11d3bx588rLy0/0jo2NjQ0NDcf+oBa6orfffruioiKT8ZRbXmlubt67d+/AgQM7exBybPv27f3792/7xY/kjZaWlurq6sGDB5/EfS+44IIRI0Yce03nBAcA8H+KbygBgHCCAwAIJzgAgHCCAwAIJzgAgHCFnT3AsaxcufKNN944//zzx44d+74L/vznPy9btqy0tHTy5Mk9evT4iMfj5DQ2Ni5YsKChoeHqq68eNGhQhz9taWlZtmxZ+82zzjpr+PDhH+2AnIxDhw5t3Lhxz549l112WWHh+//Hsm7dutWrVw8bNuyKK64oKCj4iCfk5Lz33nuvvfZaSUnJpz71qff909WrV7ffPO+88/wUdJewY8eOlStXNjU1jR49urKy8n3XVFdXL1q0qHfv3tddd11xcXEOHjU9VT300EPDhg277777hgwZMnPmzKMXLF++vLS0dNq0aePGjbv00ksPHTr00Q/Jidq/f//5558/adKkqVOn9u3bd926dUcvSJJk4sSJV1555ZVXXvnYY491ypyckDfffLNXr15t+VhbW/u+ax577LHy8vJ777131KhR06ZN+4gn5OQ8+uijPXr0KCsrmzRp0vsuePnll4uKiq78X0uWLPmIJ+QkvPTSS6WlpTfddNNXvvKVvn37zpgx4+g1GzZs6Nu375e//OVrr7121KhR77333od/3FM0OHbu3Nm7d+/Nmzenabphw4aSkpK6uroOayZMmPCjH/0oTdODBw+OHDny3//93zthUE7Q448/Pnbs2JaWljRNv/3tb990000dFrQFR1NTU2dMx0lqbGzcvXt3dXX1BwVHc3Nz//79ly1blqbprl27ioqKNm3a9FFPyYnbtWtXU1PTrFmzjhEc55577kc8FR/Su+++u2/fvrbtlStXFhYWNjY2dlhzyy23PPDAA2matra2TpgwYdasWR/+cU/R93AsXbp05MiRw4YNS5LkvPPOq6ioWLFixZELGhoaVqxYceONNyZJ0r179+uvv37hwoWdMysnYuHChZ/73OfafqPojTfeuHDhwvT9fvXc0qVLlyxZ8u67737kA3Iyevfufezfcl1VVdXS0jJhwoQkScrKyi655BIXbJdQVlbWq1evY685cODA/PnzV6xY0djY+NFMxYfUt2/fPn36tG2XlZWladrS0tJhzYIFC9q+whYUFPzlX/5lTi7YUzQ4tm/fXlFR0X5z0KBBO3bsOHLBjh07CgoK2l8srKio6LCAU9OOHTva37dRUVHR1NRUW1vbYc2QIUPmzJkzc+bMYcOG/fKXv/zIZyT3tm/fPmjQoPb3bVRUVLQ9HUIeKC4ufuqpp+6///4RI0asW7eus8fhxHznO9/54he/WFJScuTOpqamurq69q/CufoKe4q+aTRN0yPfU5bJZDr0V2tra5Ik7Wsymczhw4c/ygk5Oa2trUeetSRJOpzZ3r17b926tW3NvHnzpk6dev311/vIhq7uyPOeuGDzyEUXXbRx48a27QcffPDee+996aWXOncksve9733vjTfe6PACQvK//y3n/CvsKfoMR3l5+c6dO9tv7ty5s8OPMwwcODBN0927d7fdrKmpOfrnHTgFDRw4cNeuXW3bNTU1PXr06PBUfEFBQfu/8ptvvrmurm7btm0f9ZTk2sCBA4+8ol2weePID1y8+eab169f34nDcEIeffTRf/3Xf128eHFpaWmHPyopKenTp8+R/1fn5II9RYNjwoQJ69evb/vbvvXWW3/6058uueSSJEkaGhr27t2bJMnpp58+evToF154IUmSNE0XLVo0ceLEzp2ZbFx++eW//vWv27ZfeOGFyy+/vC0v9uzZc/QLwFVVVYWFhb4ydV11dXX19fVJkowePfrAgQNtz7fv379/5cqVLtgurbq6+tChQx12rl69+qyzzuqUeThRs2bNmjNnzm9+85sjP7a9qamp/dv4Dv9X5+SCPUVfUjnrrLNuvfXWyZMnT5ky5emnn542bVrbR9LPmjXrt7/97W9+85skSb71rW/dcccdO3bsWL9+fWNj4+c///nOnprju/3222fNmnX77befffbZ//RP//Qf//EfbfsnTpx4zz33TJs2be7cuQsXLqysrKytrZ07d+6MGTOKioo6d2aOK03Tu+66qy0Z77///qKiotmzZydJ8tWvfnXw4MH/+I//WFxcPH369C984Qt33nnn888/f/nll19wwQWdPTXHV1VV9eSTT27YsOGtt96aNm3a2LFjb7/99jRNBw0a9Lvf/W7s2LEPPfTQrl27hg0btnnz5meffXbevHmdPTLH91//9V/333//Zz7zmRkzZrTt+c53vlNRUfHss8/OnDnzzTffTJLkm9/85jXXXHPo0KGampo1a9b85Cc/+fCPe+p+PH1ra+uzzz67cePGT37ykzfeeGPb98Gvv/56dXX1pEmT2ta88sorCxcuLCsru/XWW08//fROnZds7d69++mnn25oaPjsZz97/vnnt+18/vnnzz333BEjRuzcuXPhwoVbt2497bTTJkyYMGbMmM6dliw98cQT7dvdunWbOnVqkiQrVqwoLi5uP4nz589ftWrV8OHDv/jFL3pfTpewefPmtm/w2gwfPvzyyy9PkmTu3LmTJ0/u16/fn/70p8WLF+/YsaO8vPzaa69t+9FCTnFbt25dvHjxkXtuvvnmvn37bt68+fXXX//c5z7XtnPjxo2/+tWvioqKbrnllgEDBnz4xz11gwMAyBun6Hs4AIB8IjgAgHCCAwAIJzgAgHCCAwAIJzgAgHCCAwAIJzgAgHCCAwAIJzgAgHCCAwAI9/8AThR822PzMP8AAAAASUVORK5CYII=">
 </div>
