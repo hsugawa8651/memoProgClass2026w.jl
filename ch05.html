@@ -484,7 +484,7 @@ x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
 </div>
 </div>
 <div id="20" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sind</span>(<span class="fl">30</span>)     <span class="co"># sin of 30 degrees = 0.5</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sind</span>(<span class="fl">30</span>)     <span class="co"># sin of 30 degrees</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>0.5</code></pre>
 </div>
@@ -519,7 +519,7 @@ x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
 <p>回転の大事な性質は <strong>長さ（原点からの距離）を変えない</strong> こと．</p>
 <p>長さは <span class="math inline">\(\sqrt{x^2+y^2}\)</span> で求まる．平方根は <strong><code>sqrt</code></strong> で計算する．</p>
 <div id="24" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>[<span class="fu">sqrt</span>(x0<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> y0<span class="op">^</span><span class="fl">2</span>), <span class="fu">sqrt</span>(x1<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> y1<span class="op">^</span><span class="fl">2</span>)]   <span class="co"># length before and after -&gt; equal</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>[<span class="fu">sqrt</span>(x0<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> y0<span class="op">^</span><span class="fl">2</span>), <span class="fu">sqrt</span>(x1<span class="op">^</span><span class="fl">2</span> <span class="op">+</span> y1<span class="op">^</span><span class="fl">2</span>)]   <span class="co"># length before and after the rotation</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>2-element Vector{Float64}:
  1.0
@@ -529,7 +529,7 @@ x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
 </section>
 <section id="sec-rotate-shape" class="level2" data-index="回転>図形, ブロードキャスト>回転">
 <h2 data-index="回転>図形, ブロードキャスト>回転" class="anchored" data-anchor-id="sec-rotate-shape">図形を丸ごと回す</h2>
-<p>回転式の <code>cos(θ)</code> と <code>sin(θ)</code> は <strong>スカラー</strong>，<code>xs</code> と <code>ys</code> は <strong>ベクトル</strong>である． <code>cos(θ)*xs</code> も <code>sin(θ)*ys</code> も，<a href="./ch02.html">第2回</a>で学んだ <strong>スカラー倍</strong> である． そして <strong>同じ長さのベクトルどうしの引き算も定義されている</strong>． だから回転式は <strong>ドット無しのまま</strong>，図形を丸ごと回せる．</p>
+<p>回転式の <code>cos(θ)</code> と <code>sin(θ)</code> は <strong>スカラー</strong>，<code>xs</code> と <code>ys</code> は <strong>ベクトル</strong>である． <code>cos(θ)*xs</code> も <code>sin(θ)*ys</code> も，<a href="./ch02.html">第2回</a>で学んだ <strong>スカラー倍</strong> である． そして <strong>要素数が同じベクトルどうしの引き算も定義されている</strong>． だから回転式は <strong>ドット無しのまま</strong>，図形を丸ごと回せる．</p>
 <div id="26" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>θ <span class="op">=</span> <span class="cn">π</span><span class="op">/</span><span class="fl">6</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>xr <span class="op">=</span> <span class="fu">cos</span>(θ)<span class="op">*</span>xs <span class="op">-</span> <span class="fu">sin</span>(θ)<span class="op">*</span>ys    <span class="co"># rotate all vertices at once (no dot needed)</span></span>
@@ -649,7 +649,7 @@ x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
 <p>ここから先は <strong>発展（必修ではない）</strong>．「どこにドットが要るのか」を整理したい人向けである． 読み飛ばして，次の <strong>「θ を振って回転の連続を見る」</strong> へ進んでよい．</p>
 </div>
 </div>
-<p>同じ長さのベクトルどうしなら，足し算も引き算も <strong>そのまま書ける</strong>．</p>
+<p>要素数が同じベクトルどうしなら，足し算も引き算も <strong>そのまま書ける</strong>．</p>
 <div id="36" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>[<span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>] <span class="op">-</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>]      <span class="co"># vector - vector of the same length is defined</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
@@ -686,7 +686,7 @@ x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
 </div>
 </div>
 <div id="40" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>xr<span class="op">.^</span><span class="fl">2</span> <span class="op">.+</span> yr<span class="op">.^</span><span class="fl">2</span>     <span class="co"># (length)^2 after rotation -&gt; matches above (length preserved)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>xr<span class="op">.^</span><span class="fl">2</span> <span class="op">.+</span> yr<span class="op">.^</span><span class="fl">2</span>     <span class="co"># (length)^2 after rotation; compare with the line above</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Vector{Float64}:
  0.0
@@ -818,7 +818,7 @@ x' = x\cos\theta - y\sin\theta, \qquad y' = x\sin\theta + y\cos\theta
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>近くの人と話し合う．</p>
+<p>自分で考える．近くの人と話し合う．</p>
 </div>
 </div>
 <p>本文の正方形 <code>xs = [0, 1, 1, 0, 0]</code>，<code>ys = [0, 0, 1, 1, 0]</code> を，原点ではなく <strong>自分の重心のまわりに</strong> <code>θ = π/6</code> だけ回したい．</p>
