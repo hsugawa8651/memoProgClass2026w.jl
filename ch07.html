@@ -401,13 +401,13 @@ F = \frac{9}{5}C + 32
 </div>
 </div>
 <div id="12" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">2.0</span>)        <span class="co"># 2.0^2 - 2 = 2.0</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">2.0</span>)        <span class="co"># f(2) = 2^2 - 2</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>2.0</code></pre>
 </div>
 </div>
 <div id="14" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">0.0</span>)        <span class="co"># 0.0^2 - 2 = -2.0</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">0.0</span>)        <span class="co"># f(0) = 0^2 - 2</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>-2.0</code></pre>
 </div>
@@ -502,7 +502,7 @@ F = \frac{9}{5}C + 32
 <p>関数にしたので，<strong>同じ1行を繰り返す</strong> だけで区間がどんどん狭まる． 返ってきた2要素ベクトル <code>ab</code> の両端 <code>ab[1]</code>，<code>ab[2]</code>（<a href="./ch02.html">第2回</a>の添字）を， 次の <code>bisect</code> の引数に渡す．</p>
 <div id="20" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> [<span class="fl">1.0</span>, <span class="fl">2.0</span>]</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])    <span class="co"># 1 step -&gt; interval halved</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ab <span class="op">=</span> <span class="fu">bisect</span>(f, ab[<span class="fl">1</span>], ab[<span class="fl">2</span>])    <span class="co"># one step of the bisection</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>2-element Vector{Float64}:
  1.0
@@ -610,18 +610,14 @@ F = \frac{9}{5}C + 32
 </div>
 </div>
 <div id="28" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@errmsg</span> <span class="fu">bisect</span>(<span class="fl">1.0</span>, <span class="fl">2.0</span>)     <span class="co"># only 2 arguments -&gt; MethodError</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@errmsg</span> <span class="fu">bisect</span>(<span class="fl">1.0</span>, <span class="fl">2.0</span>)     <span class="co"># only 2 arguments, but bisect takes 3</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<div class="ansi-escaped-output">
-<pre>MethodError: no method matching bisect(::Float64, ::Float64)
+<pre><code>MethodError: no method matching bisect(::Float64, ::Float64)
 The function `bisect` exists, but no method is defined for this combination of argument types.
 
 Closest candidates are:
-  bisect(::Any, ::Any, <span class="ansi-bright-red-fg">::Any</span>)
-<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">Main.Notebook</span> <span class="ansi-bright-black-fg">~/Documents/__Class/26w-MSE-prog/memoProgClass2026w-work/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">ch07.qmd:103</span>
-
-</pre>
-</div>
+  bisect(::Any, ::Any, !Matched::Any)
+</code></pre>
 </div>
 </div>
 <p>引数は <strong>過不足なく</strong> 渡す，という約束（インタフェース）を守る必要がある．</p>
@@ -664,7 +660,7 @@ Closest candidates are:
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>近くの人と話し合う．</p>
+<p>自分で考える．近くの人と話し合う．</p>
 </div>
 </div>
 <p>座標の並び <code>xs</code>，<code>ys</code> を受け取り，重心（頂点の座標の平均）を2要素ベクトルで返す関数を作るとする．</p>

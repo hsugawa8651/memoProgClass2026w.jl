@@ -348,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="4" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pwd</span>()                     <span class="co"># where am I now?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>"/Users/hs/Documents/__Class/26w-MSE-prog/memoProgClass2026w-work"</code></pre>
+<pre><code>"/private/tmp/adv03-example"</code></pre>
 </div>
 </div>
 <p>これが <strong>いま居る場所</strong> である．<strong>ファイルを触る前に，まずこれを実行する</strong>．</p>
@@ -371,27 +371,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="6" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readdir</span>()                 <span class="co"># what is here?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>50-element Vector{String}:
- ".quarto"
- ".tours"
- ".vscode"
- "20260623-codex-review.md"
- "IPA_Font_License_Agreement_v1.0.txt"
- "Manifest.toml"
- "Project.toml"
- "_adv-ch03.qmd"
- "_advanced.yml"
- "_ai-declaration.qmd"
- ⋮
- "hello2.txt"
- "index.qmd"
- "ipaexg.ttf"
- "make-standalone-notebooks.py"
- "notebooks"
- "prepare-publish.sh"
- "site"
- "site-publish"
- "site-teacher"</code></pre>
+<pre><code>2-element Vector{String}:
+ "adv03-files-and-paths.ipynb"
+ "adv03-files-and-paths.jl"</code></pre>
 </div>
 </div>
 <p>この一覧に <strong>自分が開いている notebook のファイル名</strong>があれば， notebook と同じ場所に居る．無ければ，別の場所に居る．</p>
@@ -401,7 +383,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>ファイルの場所を表す文字列を <strong>パス</strong> という．2種類ある．</p>
 <ul>
 <li><strong>相対パス</strong> … いま居る場所からの道順．<code>"hello1.txt"</code>，<code>"data/a.csv"</code></li>
-<li><strong>絶対パス</strong> … 木の一番上からの道順．<code>"C:/Julia/PKG"</code>，<code>"/Users/hs/a.txt"</code></li>
+<li><strong>絶対パス</strong> … 木の一番上からの道順．<code>"C:/Julia/PKG"</code>，<code>"/Users/you/a.txt"</code></li>
 </ul>
 <p>相対パスは短くて済むが，<strong>いま居る場所が変わると意味が変わる</strong>． 絶対パスは長いが，どこから実行しても同じ場所を指す．</p>
 <p>パスをつなぐときは，<code>*</code> で文字列を貼り合わせるのではなく <strong><code>joinpath</code></strong> を使う．</p>
@@ -429,7 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="10" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">joinpath</span>(<span class="fu">pwd</span>(), <span class="st">"hello1.txt"</span>)  <span class="co"># absolute path, built from where we are</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>"/Users/hs/Documents/__Class/26w-MSE-prog/memoProgClass2026w-work/hello1.txt"</code></pre>
+<pre><code>"/private/tmp/adv03-example/hello1.txt"</code></pre>
 </div>
 </div>
 <p>パスを分解する関数もある．</p>
