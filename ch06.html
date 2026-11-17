@@ -327,20 +327,20 @@ window.Quarto = {
 <h2 data-index="比較演算, 論理型, Bool" class="anchored" data-anchor-id="sec-compare">比較演算と論理型</h2>
 <p><strong>比較演算子</strong> は「左右の大小・等しさ」を調べ，その結果は数ではなく <strong><code>true</code>（真）</strong> か <strong><code>false</code>（偽）</strong> という <strong>論理値</strong>（<code>Bool</code> 型）になる． <code>true</code>/<code>false</code> は<a href="./ch01.html">第1回</a>で顔見せ済みだが，今回が主役である．</p>
 <div id="4" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span> <span class="op">&lt;</span> <span class="fl">5</span>             <span class="co"># is 3 less than 5? → true</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span> <span class="op">&lt;</span> <span class="fl">5</span>             <span class="co"># is 3 less than 5?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
 </div>
 <div id="6" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">==</span> <span class="fl">2</span>            <span class="co"># equal? → true (== is comparison; = is assignment)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">==</span> <span class="fl">2</span>            <span class="co"># are the two sides equal? (== is comparison; = is assignment)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
 </div>
 <p>主な比較演算子は，<code>&lt;</code>（より小さい），<code>&gt;</code>（より大きい）， <code>&lt;=</code>（以下，<code>≤</code> とも書ける），<code>&gt;=</code>（以上，<code>≥</code> とも書ける）， <code>==</code>（等しい），<code>!=</code>（等しくない）である．</p>
 <div id="8" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">&lt;=</span> <span class="fl">2</span>            <span class="co"># is 2 less than or equal to 2? → true</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">&lt;=</span> <span class="fl">2</span>            <span class="co"># is 2 less than or equal to 2?</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
@@ -424,19 +424,19 @@ window.Quarto = {
 <li><code>!</code> … <strong>否定</strong>（not）：<code>true</code> と <code>false</code> を入れ替える．</li>
 </ul>
 <div id="18" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cn">true</span> <span class="op">&amp;&amp;</span> <span class="cn">false</span>     <span class="co"># and: false unless both are true</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cn">true</span> <span class="op">&amp;&amp;</span> <span class="cn">false</span>     <span class="co"># and</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>false</code></pre>
 </div>
 </div>
 <div id="20" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cn">true</span> <span class="op">||</span> <span class="cn">false</span>     <span class="co"># or: true if either one is true</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cn">true</span> <span class="op">||</span> <span class="cn">false</span>     <span class="co"># or</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
 </div>
 <div id="22" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>!<span class="cn">true</span>             <span class="co"># not: true ↔ false</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>!<span class="cn">true</span>             <span class="co"># not</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>false</code></pre>
 </div>
@@ -457,13 +457,13 @@ window.Quarto = {
 </div>
 <div id="24" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">7</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>(x <span class="op">&gt;</span> <span class="fl">0</span>) <span class="op">&amp;&amp;</span> (x <span class="op">&lt;</span> <span class="fl">10</span>)   <span class="co"># positive and less than 10 → true</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>(x <span class="op">&gt;</span> <span class="fl">0</span>) <span class="op">&amp;&amp;</span> (x <span class="op">&lt;</span> <span class="fl">10</span>)   <span class="co"># positive and less than 10</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
 </div>
 <div id="26" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(x <span class="op">&lt;</span> <span class="fl">0</span>) <span class="op">||</span> (x <span class="op">&gt;</span> <span class="fl">5</span>)    <span class="co"># negative or greater than 5 → true</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(x <span class="op">&lt;</span> <span class="fl">0</span>) <span class="op">||</span> (x <span class="op">&gt;</span> <span class="fl">5</span>)    <span class="co"># negative or greater than 5</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>true</code></pre>
 </div>
@@ -604,13 +604,13 @@ window.Quarto = {
 </div>
 <div id="32" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>a, b <span class="op">=</span> <span class="fl">1.0</span>, <span class="fl">2.0</span>       <span class="co"># both ends at once (simultaneous assignment, lesson 5)</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>a<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span>               <span class="co"># f(a) = f(1) → negative (&lt; 0)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>a<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span>               <span class="co"># f(a), that is f(1)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>-1.0</code></pre>
 </div>
 </div>
 <div id="34" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>b<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span>               <span class="co"># f(b) = f(2) → positive (&gt; 0)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>b<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span>               <span class="co"># f(b), that is f(2)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>2.0</code></pre>
 </div>
@@ -799,7 +799,7 @@ step 3: [1.375, 1.5]  width = 0.125</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>近くの人と話し合う．</p>
+<p>自分で考える．近くの人と話し合う．</p>
 </div>
 </div>
 <p><code>f(x) = x^2 - 2</code> で区間 <code>[-2, 2]</code> を選ぶと，両端で <code>f</code> が同じ符号になり，はさみうちを始められない．</p>
